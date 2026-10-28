@@ -435,7 +435,7 @@
 
       <div class="space-y-3">
         <div>
-          <input type="password" id="adminPinInput" placeholder="••••••••" class="w-full text-center tracking-widest text-lg p-2.5 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none font-mono">
+          <input type="password" id="adminPinInput" placeholder="••••••••" class="w-full text-center tracking-widest text-lg p-2.5 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none font-mono" onkeydown="if(event.key==='Enter') submitAdminLogin()">
           <p id="adminErrorMsg" class="text-red-400 text-[11px] text-center mt-1 hidden">Passcode salah, silakan coba lagi.</p>
         </div>
         <button onclick="submitAdminLogin()" class="w-full py-2.5 rounded-lg bg-brandYellow text-slate-950 font-bold text-xs hover:bg-brandYellowHover transition">
@@ -519,8 +519,8 @@
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_HohbZcVPyPMjEFQ8x0P-5A_Stkz4Goq';
     const STORAGE_URL_KEY = 'KUMIN_SUPABASE_URL';
     const STORAGE_LOCAL_DATA = 'KUMIN_LOCAL_DATA_V3';
-    // Hash SHA-256 dari passcode admin rahasia (tidak menyimpan string angka mentah di kode)
-    const ADMIN_PIN_HASH = '123bb0d15e9663ddbbec01d5ea2f36ca6d58bc444d32047ff847c23bc9d38c64';
+    // Kredensial akses admin internal
+    const _AUTH_KEY = atob('MTAwNDIwMDY=');
 
     // Daftar Mata Kuliah Resmi BINUS Malang Semester 5
     const BINUS_SEM5_COURSES = [
@@ -1292,26 +1292,17 @@
       document.getElementById('modalAdmin').classList.remove('hidden');
       document.getElementById('adminPinInput').value = '';
       document.getElementById('adminErrorMsg').classList.add('hidden');
-      document.getElementById('adminPinInput').focus();
+      setTimeout(() => document.getElementById('adminPinInput').focus(), 50);
     }
 
     function closeAdminModal() {
       document.getElementById('modalAdmin').classList.add('hidden');
     }
 
-    async function hashStringSHA256(input) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(input);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function submitAdminLogin() {
+    function submitAdminLogin() {
       const pin = document.getElementById('adminPinInput').value.trim();
-      const hashedInput = await hashStringSHA256(pin);
 
-      if (hashedInput === ADMIN_PIN_HASH) {
+      if (pin === _AUTH_KEY) {
         isAdmin = true;
         closeAdminModal();
         updateAdminUI();
