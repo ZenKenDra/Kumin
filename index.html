@@ -430,12 +430,12 @@
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
         </div>
         <h3 class="text-lg font-bold text-white">Akses Admin KUMIN</h3>
-        <p class="text-xs text-slate-400">Masukkan Passcode Admin untuk mengirim file, gambar, dan mengedit materi.</p>
+        <p class="text-xs text-slate-400">Masukkan Passcode Admin untuk mengelola materi.</p>
       </div>
 
       <div class="space-y-3">
         <div>
-          <input type="password" id="adminPinInput" placeholder="Passcode (10042006)" class="w-full text-center tracking-widest text-lg p-2.5 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none font-mono">
+          <input type="password" id="adminPinInput" placeholder="••••••••" class="w-full text-center tracking-widest text-lg p-2.5 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none font-mono">
           <p id="adminErrorMsg" class="text-red-400 text-[11px] text-center mt-1 hidden">Passcode salah, silakan coba lagi.</p>
         </div>
         <button onclick="submitAdminLogin()" class="w-full py-2.5 rounded-lg bg-brandYellow text-slate-950 font-bold text-xs hover:bg-brandYellowHover transition">
@@ -443,7 +443,7 @@
         </button>
       </div>
 
-      <p class="text-[10px] text-center text-slate-500">Gunakan passcode admin terdaftar untuk login.</p>
+      <p class="text-[10px] text-center text-slate-500">Khusus administrator terdaftar.</p>
     </div>
   </div>
 
@@ -519,7 +519,8 @@
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_HohbZcVPyPMjEFQ8x0P-5A_Stkz4Goq';
     const STORAGE_URL_KEY = 'KUMIN_SUPABASE_URL';
     const STORAGE_LOCAL_DATA = 'KUMIN_LOCAL_DATA_V3';
-    const ADMIN_PIN = '10042006';
+    // Hash SHA-256 dari passcode admin rahasia (tidak menyimpan string angka mentah di kode)
+    const ADMIN_PIN_HASH = '123bb0d15e9663ddbbec01d5ea2f36ca6d58bc444d32047ff847c23bc9d38c64';
 
     // Daftar Mata Kuliah Resmi BINUS Malang Semester 5
     const BINUS_SEM5_COURSES = [
@@ -1298,9 +1299,19 @@
       document.getElementById('modalAdmin').classList.add('hidden');
     }
 
-    function submitAdminLogin() {
+    async function hashStringSHA256(input) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function submitAdminLogin() {
       const pin = document.getElementById('adminPinInput').value.trim();
-      if (pin === ADMIN_PIN) {
+      const hashedInput = await hashStringSHA256(pin);
+
+      if (hashedInput === ADMIN_PIN_HASH) {
         isAdmin = true;
         closeAdminModal();
         updateAdminUI();
