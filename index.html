@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KUMIN — Semester 5 Study Hub (BINUS Malang)</title>
+  <title>KUMIN — Semester 5 Study Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -13,357 +13,351 @@
         extend: {
           colors: {
             brandYellow: '#FACC15',
-            brandYellowHover: '#EAB308',
             brandBlue: '#3B82F6',
-            brandBlueHover: '#2563EB',
-            bgDark: '#090A0F',
-            cardDark: '#12141F',
-            surfaceDark: '#181B2A',
-            borderDark: '#272B3E'
+            bgDark: '#08090D',
+            surfaceDark: '#10121A',
+            borderDark: '#232736'
           }
         }
       }
-    }
+    };
   </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #090A0F;
-      color: #F3F4F6;
-    }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .hvs-page {
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #08090D; color: #F3F4F6; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* HVS A4 Print Styling */
+    .hvs-sheet {
       width: 210mm;
       min-height: 297mm;
       padding: 16mm;
       box-sizing: border-box;
-      background: #11131E;
+      background: #10121A;
+      position: relative;
     }
+
     @media print {
-      @page {
-        size: A4 portrait;
-        margin: 0;
-      }
-      body {
-        background: #FFFFFF !important;
-        color: #000000 !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-      .hvs-wrapper {
-        display: block !important;
-        padding: 0 !important;
-      }
-      .hvs-page {
+      @page { size: A4 portrait; margin: 0; }
+      body { background: #FFFFFF !important; color: #000000 !important; }
+      .no-print { display: none !important; }
+      .hvs-sheet {
         background: #FFFFFF !important;
         color: #000000 !important;
         border: none !important;
-        margin: 0 !important;
         box-shadow: none !important;
+        margin: 0 !important;
         page-break-after: always;
         break-after: page;
       }
-      .hvs-page * {
-        color: #000000 !important;
-        border-color: #CBD5E1 !important;
-        background: transparent !important;
-      }
+      .hvs-sheet * { color: #000000 !important; border-color: #CBD5E1 !important; background: transparent !important; }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-brandYellow selection:text-slate-950">
+<body class="min-h-screen flex flex-col selection:bg-yellow-400 selection:text-black">
 
-  <!-- NAVBAR -->
-  <nav class="no-print border-b border-borderDark bg-[#0D0F17]/95 backdrop-blur sticky top-0 z-50 px-4 sm:px-6 py-3.5 flex flex-wrap justify-between items-center gap-3">
+  <!-- NAVBAR UTAMA -->
+  <header class="no-print border-b border-borderDark bg-[#0B0D13]/90 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 py-3.5 flex flex-wrap justify-between items-center gap-3">
     <div class="flex items-center gap-3">
       <!-- Klik logo 3x cepat untuk membuka login admin -->
-      <h1 id="brandLogo" class="text-2xl font-extrabold tracking-tight cursor-pointer select-none" title="Klik 3x untuk Admin Login">
-        <span class="text-brandYellow">KU</span><span class="text-brandBlue">MIN</span><span class="text-brandYellow">.</span>
-      </h1>
-      <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-surfaceDark text-slate-300 border border-borderDark hidden sm:inline-block">
-        BINUS SEMESTER 5
+      <div id="secretLogo" class="cursor-pointer select-none group flex items-center gap-1.5" title="Klik 3x cepat untuk Akses Admin">
+        <span class="text-2xl font-black tracking-tight text-yellow-400 group-hover:scale-105 transition-transform">KU</span>
+        <span class="text-2xl font-black tracking-tight text-blue-500 group-hover:scale-105 transition-transform">MIN</span>
+        <span class="text-2xl font-black text-yellow-400">.</span>
+      </div>
+      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-borderDark">
+        BINUS SEM 5
       </span>
       <span id="roleIndicator" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-950/70 text-blue-400 border border-blue-800/60">
         Guest Mode
       </span>
-      <!-- Status Indikator Supabase Otomatis Tertanam -->
-      <div id="btnDbStatus" class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-surfaceDark text-slate-400 border border-borderDark flex items-center gap-1.5 select-none">
-        <span id="dbDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span id="dbStatusText">Supabase Live</span>
+      <!-- Status Indikator Database Supabase Otomatis -->
+      <div id="btnDbStatus" class="text-[11px] font-mono px-3 py-1 rounded-full bg-surfaceDark text-slate-300 border border-borderDark flex items-center gap-2 select-none" title="Status Koneksi Database Cloud Supabase">
+        <span id="dbDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        <span id="dbStatusText" class="text-amber-400 font-bold">Menghubungkan Supabase...</span>
       </div>
     </div>
 
     <!-- Tombol Navigasi Tab -->
     <div class="flex items-center gap-2">
-      <button onclick="setAppView('catalog')" id="navCatalog" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-white border border-borderDark transition flex items-center gap-1.5">
-        <span>📚</span> <span class="hidden sm:inline">Katalog</span> Matkul
+      <button onclick="setAppView('catalog')" id="btnTabCatalog" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-surfaceDark text-slate-400 hover:text-white border border-borderDark transition">
+        📂 Katalog Matkul
       </button>
-      <button onclick="setAppView('sessions')" id="navSessions" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-brandYellow text-slate-950 shadow-md transition flex items-center gap-1.5">
-        <span>📖</span> Materi & Sesi
+      <button onclick="setAppView('sessions')" id="btnTabSessions" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-yellow-400 text-slate-950 shadow-md transition">
+        📖 Materi & Sesi
       </button>
-      <button onclick="setAppView('hvs')" id="navHvs" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-white border border-borderDark transition flex items-center gap-1.5">
-        <span>📄</span> Master 2 HVS
+      <button onclick="setAppView('hvs')" id="btnTabHvs" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-surfaceDark text-blue-400 hover:bg-blue-950/40 border border-blue-800/60 transition">
+        📄 Master 2 HVS
       </button>
-      <button onclick="window.print()" id="btnPrintHvs" class="hidden px-3.5 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition items-center gap-1.5">
-        <span>🖨️</span> Save PDF / Print
+      <button onclick="window.print()" id="btnPrint" class="hidden px-3.5 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg transition">
+        🖨️ Cetak / Save PDF
       </button>
-
-      <!-- Tombol Admin / Akses -->
-      <button onclick="handleAdminButtonClick()" id="btnAdminAccess" class="px-3 py-2 text-xs font-bold rounded-lg bg-surfaceDark hover:bg-slate-800 text-slate-300 border border-borderDark transition flex items-center gap-1">
-        <span>🔐</span> <span id="adminBtnLabel">Admin</span>
+      <button onclick="handleAdminButtonClick()" id="btnAdminTrigger" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-yellow-400 border border-borderDark flex items-center gap-1.5 transition">
+        <span id="adminLockIcon">🔒</span>
+        <span id="adminBtnText">Admin</span>
       </button>
     </div>
-  </nav>
+  </header>
 
   <!-- KONTEN UTAMA -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
-    
-    <!-- ================= VIEW 1: KATALOG MATA KULIAH (GRID BENTO) ================= -->
+
+    <!-- 1. TAMPILAN VIEW: KATALOG MATA KULIAH (GRID KOTAK BENTO) -->
     <section id="viewCatalog" class="hidden space-y-6">
-      <div class="flex flex-wrap justify-between items-end gap-3 border-b border-borderDark pb-4">
+      <div class="flex flex-wrap justify-between items-center gap-4">
         <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-extrabold text-brandYellow uppercase tracking-wider">BINUS University Malang</span>
-            <span class="text-[10px] text-slate-400 font-mono">Undergraduate</span>
-          </div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-1">Daftar Mata Kuliah Semester 5</h2>
-          <p class="text-xs text-slate-400">Pilih salah satu mata kuliah untuk membaca live preview slide dokumen, rangkuman, dan soal latihan.</p>
+          <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+            <span>📚</span> Mata Kuliah Semester 5 BINUS Malang
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Pilih mata kuliah untuk melihat preview dokumen slide, rangkuman konsep, dan latihan kuis.</p>
         </div>
-        <div class="admin-only hidden">
-          <button onclick="openAddCourseModal()" class="px-4 py-2 text-xs font-bold rounded-lg bg-brandYellow text-slate-950 hover:bg-brandYellowHover transition flex items-center gap-1.5 shadow-md">
-            <span>+</span> Tambah Matkul Baru
-          </button>
-        </div>
+        <button onclick="openAddCourseModal()" class="admin-only hidden px-3.5 py-2 text-xs font-bold rounded-xl bg-yellow-400 text-slate-950 hover:bg-yellow-300 transition">
+          + Tambah Mata Kuliah
+        </button>
       </div>
 
-      <!-- Grid Cards Kotak-Kotak -->
-      <div id="courseCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Rendered via JavaScript -->
+      <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Render Otomatis by JavaScript -->
       </div>
     </section>
 
-    <!-- ================= VIEW 2: MATERI & SESI MATA KULIAH ================= -->
+    <!-- 2. TAMPILAN VIEW: MATERI & SESI KULIAH AKTIF -->
     <section id="viewSessions" class="space-y-6">
-      
-      <!-- Banner Matkul Aktif -->
-      <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-cardDark via-surfaceDark to-cardDark border border-borderDark flex flex-wrap justify-between items-center gap-4 shadow-lg">
-        <div>
+      <!-- Header Banner Matkul Aktif -->
+      <div class="no-print p-6 rounded-2xl bg-gradient-to-r from-surfaceDark via-[#131724] to-surfaceDark border border-borderDark flex flex-wrap justify-between items-center gap-4">
+        <div class="space-y-1">
           <div class="flex items-center gap-2">
-            <span id="activeCourseCode" class="text-xs font-extrabold px-2.5 py-0.5 rounded bg-brandYellow text-slate-950 font-mono">CODE</span>
-            <span id="activeCourseClass" class="text-xs font-bold px-2 py-0.5 rounded bg-blue-950/70 text-blue-300 border border-blue-800/60 font-mono">LA31</span>
-            <span id="activeCourseSks" class="text-xs text-slate-400">4 SKS</span>
+            <span class="text-xs font-mono font-bold text-yellow-400 uppercase tracking-wider" id="activeCourseCode">COMP6687004</span>
+            <span class="text-slate-600">•</span>
+            <span class="text-xs font-bold text-blue-400" id="activeCourseMeta">Kelas LA31 • 4 SKS</span>
           </div>
-          <h2 id="activeCourseName" class="text-lg sm:text-2xl font-extrabold text-white mt-2">Nama Mata Kuliah</h2>
-          <p id="activeCourseStats" class="text-xs text-slate-400 mt-1">Total sesi pembelajaran dan rangkuman ujian</p>
+          <h2 class="text-xl sm:text-2xl font-black text-white" id="activeCourseTitle">User Experience Design</h2>
         </div>
-
         <div class="flex items-center gap-2">
-          <button onclick="setAppView('catalog')" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-white border border-borderDark transition">
+          <button onclick="setAppView('catalog')" class="px-3.5 py-2 text-xs font-bold rounded-xl bg-surfaceDark text-slate-300 hover:text-white border border-borderDark transition">
             ← Ganti Matkul
           </button>
-          <div class="admin-only hidden">
-            <button onclick="toggleUploadSessionDrawer()" class="px-4 py-2 text-xs font-bold rounded-lg bg-brandBlue text-white hover:bg-brandBlueHover transition shadow-md flex items-center gap-1.5">
-              <span>+</span> Upload Sesi Baru
-            </button>
-          </div>
+          <button onclick="toggleUploadSessionDrawer()" class="admin-only hidden px-4 py-2 text-xs font-extrabold rounded-xl bg-yellow-400 text-slate-950 hover:bg-yellow-300 shadow-lg shadow-yellow-400/10 transition flex items-center gap-2">
+            <span>+</span> Upload Sesi & Materi
+          </button>
         </div>
       </div>
 
-      <!-- FORM UPLOAD MATERI SESI ADMIN (Collapsible) -->
-      <div id="adminUploadDrawer" class="admin-only hidden p-5 sm:p-6 rounded-2xl bg-cardDark border-2 border-brandBlue/50 space-y-4 shadow-2xl">
+      <!-- FORM DRAWER UPLOAD SESI ADMIN -->
+      <div id="adminUploadDrawer" class="hidden no-print p-6 rounded-2xl bg-[#0F111A] border-2 border-dashed border-yellow-400/60 shadow-2xl space-y-4">
         <div class="flex justify-between items-center border-b border-borderDark pb-3">
           <div class="flex items-center gap-2">
             <span class="text-base">⚡</span>
-            <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Admin: Input Materi & Dokumen Sesi Baru</h3>
+            <h3 class="text-sm font-extrabold text-yellow-400 uppercase tracking-wider">Admin — Input Sesi & Kirim Materi ke Supabase</h3>
           </div>
-          <button onclick="toggleUploadSessionDrawer()" class="text-xs text-slate-400 hover:text-white">Tutup ✕</button>
+          <button onclick="toggleUploadSessionDrawer()" class="text-slate-400 hover:text-white text-xs">✕ Tutup</button>
         </div>
 
         <form id="formSessionUpload" onsubmit="handleSessionSubmit(event)" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label class="text-[11px] font-bold text-slate-300">Nomor Sesi</label>
-              <input type="number" id="inputSessionNum" min="1" max="20" value="1" required class="w-full text-xs p-2.5 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none mt-1">
+              <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Nomor Sesi</label>
+              <input type="number" id="inputSessionNum" min="1" max="16" value="1" required class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none">
             </div>
-            <div class="sm:col-span-3">
-              <label class="text-[11px] font-bold text-slate-300">Judul Sesi Perkuliahan</label>
-              <input type="text" id="inputSessionTitle" placeholder="Contoh: Sesi 01 - Introduction to UX & The Five Planes" required class="w-full text-xs p-2.5 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none mt-1">
-            </div>
-          </div>
-
-          <!-- Upload Dokumen / Slide PPTX / PDF -->
-          <div class="p-3.5 rounded-xl bg-surfaceDark border border-borderDark space-y-2">
-            <div class="flex justify-between items-center">
-              <label class="text-[11px] font-bold text-brandBlue flex items-center gap-1.5">
-                <span>📑</span> File Dokumen Slide (PDF / PPT / PPTX)
-              </label>
-              <span class="text-[10px] text-slate-400">Live Preview</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <input type="file" id="inputFileDoc" accept=".pdf,.ppt,.pptx,.doc,.docx" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-bold file:bg-brandBlue file:text-white hover:file:bg-brandBlueHover cursor-pointer">
-                <span class="text-[10px] text-slate-500 block mt-1">Upload langsung dari komputer/laptop</span>
-              </div>
-              <div>
-                <input type="url" id="inputFileUrl" placeholder="Atau paste Public URL file (Supabase / Drive / GitHub)" class="w-full text-xs p-2 rounded-lg bg-cardDark border border-borderDark text-white focus:border-brandBlue outline-none">
-                <span class="text-[10px] text-slate-500 block mt-1">Disarankan URL publik agar live preview optimal</span>
-              </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topik / Judul Sesi</label>
+              <input type="text" id="inputSessionTitle" placeholder="Misal: Introduction to UX & The Five Planes" required class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none">
             </div>
           </div>
 
-          <!-- Rangkuman Materi Teks -->
-          <div>
-            <label class="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
-              <span>💡</span> Rangkuman Inti & Catatan Penjelas (Tampil Tepat di Bawah Slide/PDF)
-            </label>
-            <textarea id="inputTextSummary" rows="4" placeholder="Tuliskan poin-poin penting, formula, konsep utama yang merangkum isi slide di atas..." required class="w-full text-xs p-3 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none mt-1 leading-relaxed font-sans"></textarea>
-          </div>
-
-          <!-- Pertanyaan & Latihan Soal Manual -->
-          <div class="p-3.5 rounded-xl bg-surfaceDark border border-brandYellow/40 space-y-2">
-            <div class="flex justify-between items-center">
-              <label class="text-[11px] font-bold text-brandYellow flex items-center gap-1.5">
-                <span>🎯</span> Latihan Soal Pilihan Ganda (A/B/C/D) Manual
-              </label>
-              <span class="text-[10px] text-slate-400 font-mono">Pilihan Ganda Interaktif</span>
-            </div>
-            <p class="text-[11px] text-slate-400 leading-snug">
-              Tuliskan soal pilihan ganda manual lengkap dengan opsi A, B, C, D dan kunci jawaban.
-            </p>
-            <textarea id="inputManualQuestions" rows="6" placeholder="Soal: Siapakah tokoh yang pertama kali mempopulerkan istilah User Experience?&#10;A. Steve Jobs&#10;B. Don Norman&#10;C. Bill Gates&#10;D. Jakob Nielsen&#10;Kunci: B&#10;Pembahasan: Don Norman mempopulerkan istilah UX saat bekerja di Apple pada tahun 1990-an." class="w-full text-xs p-3 rounded-lg bg-cardDark border border-borderDark text-white focus:border-brandYellow outline-none font-mono text-[11px] leading-relaxed"></textarea>
-          </div>
-
-          <!-- Upload Gambar Diagram / Bagan Opsional -->
+          <!-- Upload Dokumen / Link -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="text-[11px] font-semibold text-slate-300">Upload Gambar Bagan / Diagram (JPG / PNG)</label>
-              <input type="file" id="inputFileImage" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-surfaceDark file:text-slate-300 mt-1 cursor-pointer">
+              <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">File Dokumen PDF / Slide PPTX</label>
+              <input type="file" id="inputFileDoc" accept=".pdf,.pptx,.ppt,.docx" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
             </div>
             <div>
-              <label class="text-[11px] font-semibold text-slate-300">Atau URL Gambar Online</label>
-              <input type="url" id="inputImageUrl" placeholder="https://..." class="w-full text-xs p-2 rounded-lg bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none mt-1">
+              <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Atau URL Public Slide / Dokumen</label>
+              <input type="url" id="inputFileUrl" placeholder="https://example.com/slide-materi.pdf" class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none font-mono">
             </div>
           </div>
 
-          <div class="flex gap-2 pt-2">
-            <button type="submit" id="btnSubmitSession" class="flex-1 py-2.5 text-xs font-extrabold bg-brandYellow text-slate-950 rounded-lg hover:bg-brandYellowHover transition shadow-md shadow-brandYellow/10 flex items-center justify-center gap-2">
-              <span>🚀 Simpan & Publikasikan Sesi</span>
-            </button>
-            <button type="button" onclick="toggleUploadSessionDrawer()" class="px-4 py-2.5 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-white border border-borderDark">
+          <!-- Rangkuman Teks -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Rangkuman Materi & Penjelasan Konsep Inti</label>
+            <textarea id="inputTextSummary" rows="4" required placeholder="Tulis rangkuman mendalam mengenai topik ini..." class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none leading-relaxed"></textarea>
+          </div>
+
+          <!-- Lampiran Gambar Diagram (JPG) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Upload Gambar Diagram (JPG/PNG)</label>
+              <input type="file" id="inputFileImage" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-yellow-400 file:text-slate-950 hover:file:bg-yellow-300 cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Atau URL Gambar Diagram</label>
+              <input type="url" id="inputImageUrl" placeholder="https://example.com/diagram.jpg" class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none font-mono">
+            </div>
+          </div>
+
+          <!-- Latihan Soal ABC -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-[11px] font-bold text-slate-400 uppercase">Soal Pilihan Ganda Interaktif (Format ABC)</label>
+              <span class="text-[10px] text-yellow-400">Gunakan format terstruktur di bawah</span>
+            </div>
+            <textarea id="inputManualQuestions" rows="5" placeholder="Soal 1: Pertanyaan Anda di sini?&#10;A. Pilihan jawaban A&#10;B. Pilihan jawaban B&#10;C. Pilihan jawaban C&#10;D. Pilihan jawaban D&#10;Kunci: B&#10;Pembahasan: Penjelasan konsep kenapa B benar..." class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none font-mono leading-relaxed"></textarea>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2 border-t border-borderDark">
+            <button type="button" onclick="toggleUploadSessionDrawer()" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-borderDark">
               Batal
+            </button>
+            <button type="submit" id="btnSubmitSession" class="px-5 py-2 text-xs font-extrabold rounded-xl bg-yellow-400 text-slate-950 hover:bg-yellow-300 transition shadow-lg shadow-yellow-400/10">
+              🚀 Simpan ke Database Supabase
             </button>
           </div>
         </form>
       </div>
 
-      <!-- Container Daftar Sesi -->
-      <div id="sessionsContainer" class="space-y-6">
-        <!-- Rendered via JavaScript -->
+      <!-- Container Daftar Sesi (Rendered by JS) -->
+      <div id="sessionsList" class="space-y-6">
+        <!-- List Sesi Otomatis -->
       </div>
     </section>
 
-    <!-- ================= VIEW 3: MASTER 2 HALAMAN HVS ================= -->
-    <section id="viewHvs" class="hidden space-y-6">
-      <div class="no-print p-4 sm:p-5 rounded-2xl bg-cardDark border border-borderDark flex flex-wrap justify-between items-center gap-3">
-        <div>
-          <span class="text-xs font-extrabold text-brandYellow uppercase tracking-wider">Master Cheat Sheet A4</span>
-          <h2 class="text-base sm:text-lg font-extrabold text-white">Ringkasan Eksekutif 2 Halaman HVS (UTS & UAS)</h2>
-          <p class="text-xs text-slate-400">Ukuran presisi A4 portret. Siap dicetak atau disimpan sebagai PDF dengan rasio 1:1 tanpa potongan.</p>
-        </div>
-        <button onclick="window.print()" class="px-4 py-2 text-xs font-extrabold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition flex items-center gap-1.5">
-          <span>🖨️</span> Save PDF / Print Dokumen
-        </button>
+    <!-- 3. TAMPILAN VIEW: MASTER 2 HALAMAN HVS (PRINT PREVIEW A4) -->
+    <section id="viewHvs" class="hidden flex flex-col items-center gap-8 py-4">
+      <div class="no-print text-center max-w-xl mx-auto space-y-2 mb-2">
+        <h3 class="text-lg font-black text-white">Pratinjau Master Rangkuman 2 Lembar HVS (A4)</h3>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Dirancang presisi 210mm x 297mm per halaman. Klik tombol <strong class="text-emerald-400">🖨️ Cetak / Save PDF</strong> di navigasi atas untuk mencetak atau menyimpan dokumen bersih tanpa navigasi web.
+        </p>
       </div>
 
-      <!-- Kanvas 2 Lembar A4 -->
-      <div class="hvs-wrapper flex flex-col items-center gap-8 overflow-x-auto pb-12">
-        <!-- LEMBAR 1: UTS (Aksen Kuning) -->
-        <div class="hvs-page rounded-xl border-2 border-brandYellow/60 shadow-2xl flex flex-col justify-between">
-          <div>
-            <div class="border-b-2 border-brandYellow pb-2.5 mb-4 flex justify-between items-end">
-              <div>
-                <h3 class="text-base font-extrabold text-brandYellow uppercase tracking-tight">KUMIN MASTER SHEET — HALAMAN 1/2 (UTS)</h3>
-                <p id="hvs1CourseName" class="text-xs text-slate-300 font-bold mt-0.5">Mata Kuliah</p>
-              </div>
-              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-brandYellow/20 text-brandYellow">SEM 5</span>
+      <!-- LEMBAR HVS 1 (UTS) -->
+      <div class="hvs-sheet rounded-2xl border-2 border-yellow-400/50 shadow-2xl flex flex-col justify-between">
+        <div>
+          <div class="border-b-2 border-yellow-400 pb-3 mb-4 flex justify-between items-end">
+            <div>
+              <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">KUMIN STUDY HUB • LEMBAR 1 DARI 2</span>
+              <h2 class="text-base font-extrabold text-white mt-0.5" id="hvsTitleCourse1">Mata Kuliah — Ringkasan UTS</h2>
             </div>
-            <div id="hvsPage1Content" class="grid grid-cols-2 gap-4 text-xs leading-relaxed select-text">
-              <!-- Rendered via JavaScript -->
-            </div>
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-yellow-400/20 text-yellow-300">PARUH UTS</span>
           </div>
-          <div class="text-[10px] text-slate-400 border-t border-slate-700/80 pt-2 flex justify-between font-mono">
-            <span>KUMIN • Semester 5 BINUS Malang</span>
-            <span>Halaman 1 dari 2</span>
+          <div id="hvsPage1Content" class="space-y-3 leading-relaxed">
+            <!-- Diisi JavaScript -->
           </div>
         </div>
+        <div class="text-[10px] font-mono text-slate-500 border-t border-borderDark pt-2 flex justify-between">
+          <span>KUMIN BINUS Malang Semester 5</span>
+          <span>Halaman 1 (Materi Sesi 1 - 7)</span>
+        </div>
+      </div>
 
-        <!-- LEMBAR 2: UAS (Aksen Biru) -->
-        <div class="hvs-page rounded-xl border-2 border-brandBlue/60 shadow-2xl flex flex-col justify-between">
-          <div>
-            <div class="border-b-2 border-brandBlue pb-2.5 mb-4 flex justify-between items-end">
-              <div>
-                <h3 class="text-base font-extrabold text-brandBlue uppercase tracking-tight">KUMIN MASTER SHEET — HALAMAN 2/2 (UAS)</h3>
-                <p id="hvs2CourseName" class="text-xs text-slate-300 font-bold mt-0.5">Mata Kuliah</p>
-              </div>
-              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-brandBlue/20 text-brandBlue">SEM 5</span>
+      <!-- LEMBAR HVS 2 (UAS) -->
+      <div class="hvs-sheet rounded-2xl border-2 border-blue-500/50 shadow-2xl flex flex-col justify-between">
+        <div>
+          <div class="border-b-2 border-blue-500 pb-3 mb-4 flex justify-between items-end">
+            <div>
+              <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">KUMIN STUDY HUB • LEMBAR 2 DARI 2</span>
+              <h2 class="text-base font-extrabold text-white mt-0.5" id="hvsTitleCourse2">Mata Kuliah — Ringkasan UAS</h2>
             </div>
-            <div id="hvsPage2Content" class="grid grid-cols-2 gap-4 text-xs leading-relaxed select-text">
-              <!-- Rendered via JavaScript -->
-            </div>
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">PARUH UAS</span>
           </div>
-          <div class="text-[10px] text-slate-400 border-t border-slate-700/80 pt-2 flex justify-between font-mono">
-            <span>KUMIN • Semester 5 BINUS Malang</span>
-            <span>Halaman 2 dari 2</span>
+          <div id="hvsPage2Content" class="space-y-3 leading-relaxed">
+            <!-- Diisi JavaScript -->
           </div>
+        </div>
+        <div class="text-[10px] font-mono text-slate-500 border-t border-borderDark pt-2 flex justify-between">
+          <span>KUMIN BINUS Malang Semester 5</span>
+          <span>Halaman 2 (Materi Sesi 8 - 14)</span>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ================= MODAL: LOGIN ADMIN ================= -->
-  <div id="modalAdminLogin" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-cardDark border border-borderDark rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
-      <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
-      <div class="text-center space-y-1">
-        <div class="w-12 h-12 mx-auto rounded-full bg-brandYellow/10 border border-brandYellow/30 flex items-center justify-center text-xl text-brandYellow">
-          🔐
+  <!-- MODAL EDIT SOAL PILIHAN GANDA (A/B/C/D) -->
+  <div id="modalEditQuestions" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surfaceDark border border-blue-500/40 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-borderDark pb-3">
+        <div>
+          <h3 class="text-sm font-extrabold text-white">✏️ Kelola Soal Pilihan Ganda (ABC)</h3>
+          <p id="editQuestionsSubtitle" class="text-xs text-slate-400 mt-0.5"></p>
         </div>
-        <h3 class="text-base font-extrabold text-white">Login Admin KUMIN</h3>
-        <p class="text-xs text-slate-400">Masukkan Passcode Resmi Admin untuk mengelola materi.</p>
+        <button onclick="closeEditQuestionsModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
       </div>
 
-      <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-3">
+      <form onsubmit="handleSaveManualQuestions(event)" class="space-y-3">
+        <input type="hidden" id="editQuestionsSessionId">
         <div>
-          <input type="password" id="inputAdminPin" placeholder="••••••••" required class="w-full text-center tracking-widest text-base font-mono p-3 rounded-xl bg-surfaceDark border border-borderDark text-white focus:border-brandYellow outline-none">
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Daftar Pertanyaan & Jawaban</label>
+          <textarea id="textareaEditQuestions" rows="8" class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none font-mono leading-relaxed"></textarea>
         </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-brandYellow hover:bg-brandYellowHover text-slate-950 font-extrabold text-xs transition">
-          Verifikasi & Masuk
-        </button>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeEditQuestionsModal()" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-borderDark">Batal</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition">Simpan Perubahan</button>
+        </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL ZOOM GAMBAR DIAGRAM -->
-  <div id="modalImageZoom" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4" onclick="closeImageZoom()">
-    <div class="relative max-w-4xl max-h-[90vh] w-full flex flex-col items-center">
-      <button onclick="closeImageZoom()" class="absolute -top-10 right-0 text-white text-lg font-bold">✕ Tutup</button>
-      <img id="modalZoomImgTag" src="" alt="Zoom Diagram" class="max-w-full max-h-[85vh] object-contain rounded-xl border border-borderDark shadow-2xl">
+  <!-- MODAL TAMBAH MATA KULIAH -->
+  <div id="modalAddCourse" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surfaceDark border border-yellow-400/40 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-borderDark pb-3">
+        <h3 class="text-sm font-extrabold text-white">+ Tambah Mata Kuliah Baru</h3>
+        <button onclick="closeAddCourseModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="handleSaveNewCourse(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Nama Mata Kuliah</label>
+          <input type="text" id="inputNewCourseName" required placeholder="Misal: Information Systems Strategy" class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Kode Matkul</label>
+            <input type="text" id="inputNewCourseCode" required placeholder="ISYS6001" class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none font-mono">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Kelas</label>
+            <input type="text" id="inputNewCourseClass" required placeholder="LA31" class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none font-mono">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Jumlah SKS</label>
+          <input type="number" id="inputNewCourseSks" min="1" max="8" value="4" required class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeAddCourseModal()" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-borderDark">Batal</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold rounded-xl bg-yellow-400 text-slate-950 hover:bg-yellow-300 transition">Simpan Matkul</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN ADMIN -->
+  <div id="modalAdminLogin" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surfaceDark border border-yellow-400/40 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-borderDark pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-base">🔐</span>
+          <h3 class="text-sm font-extrabold text-white">Akses Admin KUMIN</h3>
+        </div>
+        <button onclick="closeAdminLoginModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="submitAdminPasscode(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Masukkan Passcode Admin</label>
+          <input type="password" id="inputAdminPin" required placeholder="••••••••" class="w-full text-xs p-2.5 rounded-xl bg-slate-950 border border-borderDark text-white focus:border-yellow-400 outline-none text-center font-mono tracking-widest text-lg">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeAdminLoginModal()" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-borderDark">Batal</button>
+          <button type="submit" class="px-4 py-2 text-xs font-bold rounded-xl bg-yellow-400 text-slate-950 hover:bg-yellow-300 transition">Masuk Admin</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- ================= JAVASCRIPT APLIKASI ================= -->
   <script>
-    // 1. SUPABASE CLIENT & KONFIGURASI TERTANAM OTOMATIS (TANPA INPUT MANUAL)
-    const SUPABASE_PROJECT_URL = 'https://keano.supabase.co';
-    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_HohbZcVPyPMjEFQ8x0P-5A_Stkz4Goq';
-    let supabaseClient = null;
-
-    // 2. MATA KULIAH RESMI BINUS SEMESTER 5 (KATALOG)
+    // 1. MATA KULIAH RESMI BINUS SEMESTER 5 (KATALOG)
     const BINUS_COURSES = [
       { id: 'c1', code: 'COSC6165004', name: 'Data Analytics for Business', classCode: 'LA31', sks: 4 },
       { id: 'c2', code: 'ENPR6370002', name: 'Market Intelligence', classCode: 'LB10', sks: 2 },
@@ -372,168 +366,164 @@
       { id: 'c5', code: 'COSC6164004', name: 'Web Programming for Business', classCode: 'LA31', sks: 4 }
     ];
 
-    // DATA DUMMY DIHAPUS TOTAL - SELURUH SESI MURNI DITARIK DARI DATABASE SUPABASE
-    const INITIAL_SESSIONS = [];
-
     // Template Rangkuman Master 2 Halaman HVS untuk Tiap Matkul
     const HVS_SUMMARIES = {
-      'c1': {
-        page1: [
-          { title: 'Sesi 1-3: Business Metrics & Analytics Foundations', desc: 'Pemetaan KPI bisnis, CAC (Customer Acquisition Cost), LTV (Lifetime Value), dan churn rate.' },
-          { title: 'Sesi 4-7: Exploratory Data Analysis & Regression', desc: 'Pembersihan data bisnis, regresi linier untuk proyeksi penjualan, dan korelasi data pelanggan.' }
-        ],
-        page2: [
-          { title: 'Sesi 8-10: Predictive Modeling & Customer Segmentation', desc: 'Clustering RFM (Recency, Frequency, Monetary) dan segmentasi profil konsumen.' },
-          { title: 'Sesi 11-14: Decision Trees & Business Dashboarding', desc: 'Model klasifikasi keputusan kredit/risiko dan visualisasi eksekutif terpadu.' }
-        ]
-      },
-      'c2': {
-        page1: [
-          { title: 'Sesi 1-3: Market Research & Competitive Intelligence', desc: 'Analisis lanskap kompetitor, teknik survei pasar primer & sekunder, dan benchmarking industri.' },
-          { title: 'Sesi 4-7: Consumer Insights & Behavioral Trends', desc: 'Pemetaan consumer journey, sentimen digital, dan segmentasi target pasar potensial.' }
-        ],
-        page2: [
-          { title: 'Sesi 8-10: Market Sizing & Forecasting', desc: 'Estimasi TAM, SAM, SOM, dan proyeksi adopsi produk berbasis data historis industri.' },
-          { title: 'Sesi 11-14: Strategic Positioning & Reporting', desc: 'Penyusunan intelligence brief eksekutif dan rekomendasi diferensiasi produk.' }
-        ]
-      },
-      'c3': {
-        page1: [
-          { title: 'Sesi 1-3: Opportunity Recognition & Ideation', desc: 'Framework The Mom Test, validasi problem-solution fit, dan observasi friksi nyata konsumen.' },
-          { title: 'Sesi 4-7: Prototyping & Business Model Architecture', desc: 'Eksperimen MVP hemat biaya, 9 blok Business Model Canvas, dan penentuan value proposition.' }
-        ],
-        page2: [
-          { title: 'Sesi 8-10: Go-To-Market & Growth Hacking', desc: 'Strategi akuisisi pengguna awal, funnel konversi, dan optimalisasi channel matrix berbiaya rendah.' },
-          { title: 'Sesi 11-14: Financial Planning & Investor Pitch Deck', desc: 'Unit economics (CAC vs LTV), runway kas, dan penyusunan slide pitching investor terstruktur.' }
-        ]
-      },
       'c4': {
-        page1: [
-          { title: 'Sesi 1-3: UX Fundamentals & User Research', desc: 'The Five Planes (Strategy, Scope, Structure, Skeleton, Surface). Metode Primary Research vs Secondary Research.' },
-          { title: 'Sesi 4-7: Empathy Mapping & Information Architecture', desc: 'User Persona, Customer Journey Map, Card Sorting, dan pembuatan sitemap navigasi produk.' }
-        ],
-        page2: [
-          { title: 'Sesi 8-10: Wireframing & Design Systems', desc: 'Low-fidelity ke high-fidelity prototyping. Konsistensi UI kit dan accessibility (WCAG standard).' },
-          { title: 'Sesi 11-14: Usability Testing & Iterative Design', desc: 'Metrik SUS (System Usability Scale), heatmaps, A/B Testing, dan validasi heuristik Jakob Nielsen.' }
-        ]
-      },
-      'c5': {
-        page1: [
-          { title: 'Sesi 1-3: Web Architecture & Full-Stack Fundamentals', desc: 'Klien-server lifecycle, REST API design, HTTP methods, dan relasi database PostgreSQL/Supabase.' },
-          { title: 'Sesi 4-7: Frontend State Management & Responsive UI', desc: 'Manipulasi DOM dinamis, Single Page App patterns, Tailwind framework, dan validasi form async.' }
-        ],
-        page2: [
-          { title: 'Sesi 8-10: Authentication, Authorization & Security', desc: 'Token-based auth, Row Level Security (RLS), mitigasi XSS/CSRF, dan proteksi endpoint API.' },
-          { title: 'Sesi 11-14: Cloud Deployment & Business Integrations', desc: 'CI/CD pipeline, integrasi payment gateway / webhook, dan observabilitas performa aplikasi web.' }
-        ]
+        uts: {
+          title: 'Paruh Pertama (UTS) — The Five Planes of UX',
+          points: [
+            'Strategy Plane: Menyelaraskan Product Objectives dengan User Needs. Identifikasi target persona.',
+            'Scope Plane: Menentukan Functional Specifications & Content Requirements.',
+            'Structure Plane: Information Architecture (IA) dan Interaction Design (IxD).',
+            'Skeleton Plane: Wireframing, perletakan navigasi, dan tata letak interface.',
+            'Surface Plane: Visual design, palet warna, tipografi, dan konsistensi komponen visual.'
+          ]
+        },
+        uas: {
+          title: 'Paruh Kedua (UAS) — Usability Testing & Iterative Design',
+          points: [
+            'Usability Evaluation: Heuristic Evaluation 10 prinsip Nielsen & Think-Aloud Protocol.',
+            'Quantitative Metrics: System Usability Scale (SUS), Task Completion Rate, dan Time on Task.',
+            'Design Systems: Atomic Design tokens, reusable components, dan accessibility (WCAG AA).',
+            'Iterative Refinement: Mengubah feedback usability menjadi backlog perbaikan UI/UX.'
+          ]
+        }
       }
     };
 
     // State Utama Aplikasi
     const appData = {
       courses: [...BINUS_COURSES],
-      sessions: [...INITIAL_SESSIONS],
+      sessions: [],
       activeCourseId: 'c4',
       currentView: 'sessions',
       isAdmin: false
     };
 
-    // Keys Penyimpanan
-    const STORAGE_KEY = 'kumin_app_store_v2';
+    // ================= KONFIGURASI SUPABASE (TERTETAP & SINGLE DECLARATION) =================
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_HohbZcVPyPMjEFQ8x0P-5A_Stkz4Goq';
+    const SUPABASE_URL = 'https://npqylzzfxvjxanzopsks.supabase.co';
+    let supabaseClient = null;
 
-    // Inisialisasi Supabase Otomatis Tertanam
     function initSupabase() {
-      const dot = document.getElementById('dbDot');
-      const text = document.getElementById('dbStatusText');
-
-      if (window.supabase && SUPABASE_PROJECT_URL && SUPABASE_PUBLISHABLE_KEY) {
+      if (window.supabase) {
         try {
-          supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLISHABLE_KEY);
-          dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
-          text.textContent = 'Supabase Live';
-          syncWithSupabase();
-          return;
+          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+          updateDbStatus(true, 'Supabase Connected');
+          fetchSessionsFromDatabase();
         } catch (e) {
-          console.warn('Gagal koneksi otomatis ke Supabase:', e);
+          console.error('Inisialisasi Supabase gagal:', e);
+          updateDbStatus(false, 'Gagal Konek Supabase');
         }
+      } else {
+        updateDbStatus(false, 'Library Supabase Belum Siap');
       }
-
-      dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
-      text.textContent = 'Local Standby';
     }
 
-    // Sinkronisasi Sesi dari Supabase
-    async function syncWithSupabase() {
+    function updateDbStatus(isConnected, text) {
+      const dot = document.getElementById('dbDot');
+      const label = document.getElementById('dbStatusText');
+      if (!dot || !label) return;
+
+      if (isConnected) {
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        label.textContent = text || 'Supabase Connected';
+        label.className = 'text-emerald-400 font-bold';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+        label.textContent = text || 'Menghubungkan...';
+        label.className = 'text-amber-400 font-bold';
+      }
+    }
+
+    // AMBIL DATA SESI DARI DATABASE SUPABASE
+    async function fetchSessionsFromDatabase() {
       if (!supabaseClient) return;
       try {
+        updateDbStatus(true, 'Sinkronisasi Data...');
         const { data, error } = await supabaseClient
           .from('sessions')
           .select('*')
           .order('session_number', { ascending: true });
 
-        if (!error && Array.isArray(data)) {
-          // Mapping data Supabase ke format internal KUMIN
-          appData.sessions = data.map(row => ({
-            id: row.id,
-            courseId: row.course_id,
-            sessionNumber: row.session_number,
-            title: row.title,
-            content: row.content || '',
-            manualQuestions: row.manual_questions || '',
-            fileName: row.file_name || '',
-            fileUrl: row.file_url || '',
-            fileDataUrl: row.file_data_url || '',
-            imageUrl: row.image_url || ''
+        if (error) {
+          console.warn('Supabase query error:', error.message);
+          updateDbStatus(false, 'Tabel sessions dicek...');
+          return;
+        }
+
+        if (data) {
+          appData.sessions = data.map(item => ({
+            id: item.id,
+            courseId: item.course_id,
+            sessionNumber: item.session_number,
+            title: item.title,
+            content: item.content_md || item.content || '',
+            manualQuestions: item.manual_questions || '',
+            fileName: item.attachment_name || item.fileName || '',
+            fileUrl: item.attachment_url || item.fileUrl || '',
+            fileDataUrl: item.file_data_url || '',
+            imageUrl: item.image_url || ''
           }));
-          saveStorage();
+          updateDbStatus(true, `Supabase Live (${appData.sessions.length} Sesi)`);
           renderSessions();
           renderCatalog();
         }
       } catch (err) {
-        console.warn('Gagal membaca tabel Supabase (akan menggunakan local fallback):', err);
+        console.error('Fetch error:', err);
+        updateDbStatus(false, 'Supabase Offline');
       }
     }
 
-    // Local Storage Handler
-    function loadStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          appData.courses = parsed.courses && parsed.courses.length > 0 ? parsed.courses : BINUS_COURSES;
-          // Murni mengambil sesi dari database / hasil input riil tanpa menyuntikkan data dummy lagi
-          appData.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
-          appData.activeCourseId = parsed.activeCourseId || 'c4';
-        } else {
-          appData.courses = [...BINUS_COURSES];
-          appData.sessions = [];
-          appData.activeCourseId = 'c4';
-          saveStorage();
-        }
-      } catch (e) {
-        console.warn('Gagal membaca storage, menggunakan default data:', e);
-        appData.courses = [...BINUS_COURSES];
-        appData.sessions = [];
-        appData.activeCourseId = 'c4';
+    // ================= FUNGSI NAVIGASI & VIEW APP =================
+    function setAppView(view) {
+      appData.currentView = view;
+
+      const viewCatalog = document.getElementById('viewCatalog');
+      const viewSessions = document.getElementById('viewSessions');
+      const viewHvs = document.getElementById('viewHvs');
+      const btnTabCatalog = document.getElementById('btnTabCatalog');
+      const btnTabSessions = document.getElementById('btnTabSessions');
+      const btnTabHvs = document.getElementById('btnTabHvs');
+      const btnPrint = document.getElementById('btnPrint');
+
+      if (viewCatalog) viewCatalog.classList.toggle('hidden', view !== 'catalog');
+      if (viewSessions) viewSessions.classList.toggle('hidden', view !== 'sessions');
+      if (viewHvs) viewHvs.classList.toggle('hidden', view !== 'hvs');
+      if (btnPrint) btnPrint.classList.toggle('hidden', view !== 'hvs');
+
+      const activeBtnClass = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-yellow-400 text-slate-950 shadow-md transition';
+      const inactiveBtnClass = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-surfaceDark text-slate-400 hover:text-white border border-borderDark transition';
+
+      if (btnTabCatalog) btnTabCatalog.className = view === 'catalog' ? activeBtnClass : inactiveBtnClass;
+      if (btnTabSessions) btnTabSessions.className = view === 'sessions' ? activeBtnClass : inactiveBtnClass;
+      if (btnTabHvs) btnTabHvs.className = view === 'hvs' ? activeBtnClass : inactiveBtnClass;
+
+      if (view === 'catalog') {
+        renderCatalog();
+      } else if (view === 'sessions') {
+        renderSessions();
+      } else if (view === 'hvs') {
+        renderHvs();
       }
     }
 
-    function saveStorage() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          courses: appData.courses,
-          sessions: appData.sessions,
-          activeCourseId: appData.activeCourseId
-        }));
-      } catch (e) {
-        console.warn('Storage quota limit atau error saat menyimpan:', e);
+    function selectCourse(courseId) {
+      appData.activeCourseId = courseId;
+      setAppView('sessions');
+    }
+
+    function toggleUploadSessionDrawer() {
+      const drawer = document.getElementById('adminUploadDrawer');
+      if (drawer) {
+        drawer.classList.toggle('hidden');
       }
     }
 
     // Helper Sanitasi HTML
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -541,245 +531,129 @@
         .replace(/'/g, '&#039;');
     }
 
-    // Modal Tambah Matkul Baru (Admin)
-    function openAddCourseModal() {
-      const code = prompt('Masukkan Kode Matkul (Contoh: COSC6164004):');
-      if (!code) return;
-      const name = prompt('Masukkan Nama Mata Kuliah:');
-      if (!name) return;
-      const classCode = prompt('Masukkan Kelas (Contoh: LA31 / LB10):', 'LA31') || 'LA31';
-      const sks = parseInt(prompt('Jumlah SKS (Contoh: 2 atau 4):', '4')) || 4;
-
-      const newCourse = {
-        id: 'c_' + Date.now(),
-        code: code.trim().toUpperCase(),
-        name: name.trim(),
-        classCode: classCode.trim().toUpperCase(),
-        sks: sks
-      };
-
-      appData.courses.push(newCourse);
-      appData.activeCourseId = newCourse.id;
-      saveStorage();
-      renderCatalog();
-      setAppView('sessions');
-      alert(`✅ Mata kuliah ${newCourse.name} berhasil ditambahkan!`);
-    }
-
-    // Helper Parser Dokumen Preview (Langsung Tampil / Live Viewer)
-    function resolveDocViewerUrl(fileUrl, fileName, fileDataUrl) {
-      const src = fileUrl || fileDataUrl;
-      if (!src) return null;
-      const lower = (fileName || src).toLowerCase();
-
-      // Data URL (lokal upload)
-      if (src.startsWith('data:')) {
-        if (src.startsWith('data:application/pdf') || lower.endsWith('.pdf')) {
-          return { type: 'iframe', url: `${src}#toolbar=0&view=FitH` };
-        }
-        return { 
-          type: 'iframe', 
-          url: `https://docs.google.com/viewer?url=${encodeURIComponent(src)}&embedded=true` 
-        };
-      }
-
-      // Online Web URL (HTTPS)
-      if (lower.endsWith('.pptx') || lower.endsWith('.ppt') || lower.endsWith('.docx') || lower.endsWith('.doc')) {
-        return {
-          type: 'iframe',
-          url: `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(src)}`
-        };
-      }
-
-      if (lower.endsWith('.pdf')) {
-        return { type: 'iframe', url: `${src}#toolbar=0&navpanes=0&scrollbar=1` };
-      }
-
-      return { type: 'iframe', url: `https://docs.google.com/viewer?url=${encodeURIComponent(src)}&embedded=true` };
-    }
-
-    // Helper Parser Soal Pilihan Ganda (ABC) Manual
-    function parseQuestionsText(text) {
+    // PARSER SOAL MANUAL ABC
+    function parseManualQuestions(text) {
       if (!text || !text.trim()) return [];
-      const lines = text.split('\n');
-      const results = [];
-      let currentItem = null;
+      const blocks = text.trim().split(/(?=Soal\s*\d*\s*:)/i).filter(b => b.trim());
+      const questions = [];
 
-      lines.forEach(rawLine => {
-        const line = rawLine.trim();
-        if (!line) return;
+      blocks.forEach((block, idx) => {
+        const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+        let qText = '';
+        let options = [];
+        let key = '';
+        let explanation = '';
 
-        // Mendeteksi awal soal baru
-        if (/^(soal|pertanyaan|\d+[\.\)])/i.test(line)) {
-          if (currentItem && currentItem.q) {
-            results.push(currentItem);
+        lines.forEach(line => {
+          if (/^Soal\s*\d*\s*:/i.test(line)) {
+            qText = line.replace(/^Soal\s*\d*\s*:/i, '').trim();
+          } else if (/^[A-D]\s*[\.\)]/i.test(line)) {
+            const optLetter = line[0].toUpperCase();
+            const optText = line.replace(/^[A-D]\s*[\.\)]\s*/i, '').trim();
+            options.push({ letter: optLetter, text: optText });
+          } else if (/^Kunci\s*:/i.test(line)) {
+            key = line.replace(/^Kunci\s*:/i, '').trim().toUpperCase();
+          } else if (/^Pembahasan\s*:/i.test(line)) {
+            explanation = line.replace(/^Pembahasan\s*:/i, '').trim();
+          } else if (qText && !options.length) {
+            qText += ' ' + line;
+          } else if (explanation) {
+            explanation += ' ' + line;
           }
-          currentItem = {
-            q: line.replace(/^(soal\s*\d*[:\.-]?|pertanyaan\s*\d*[:\.-]?|\d+[\.\)])/i, '').trim(),
-            options: {},
-            key: '',
-            explanation: ''
-          };
-        } else if (/^([A-D])[\.\)]\s*(.*)/i.test(line)) {
-          // Mendeteksi Opsi A, B, C, D
-          const match = line.match(/^([A-D])[\.\)]\s*(.*)/i);
-          if (match && currentItem) {
-            const letter = match[1].toUpperCase();
-            currentItem.options[letter] = match[2].trim();
-          }
-        } else if (/^(kunci|jawaban|kunci jawaban)[:\.-]?\s*([A-D])/i.test(line)) {
-          // Mendeteksi Kunci Jawaban
-          const match = line.match(/^(kunci|jawaban|kunci jawaban)[:\.-]?\s*([A-D])/i);
-          if (match && currentItem) {
-            currentItem.key = match[2].toUpperCase();
-          }
-        } else if (/^(pembahasan|penjelasan|alasan)[:\.-]?\s*(.*)/i.test(line)) {
-          // Mendeteksi Pembahasan
-          const match = line.match(/^(pembahasan|penjelasan|alasan)[:\.-]?\s*(.*)/i);
-          if (match && currentItem) {
-            currentItem.explanation = match[2].trim();
-          }
-        } else {
-          // Baris lanjutan teks
-          if (currentItem) {
-            if (currentItem.explanation) {
-              currentItem.explanation += ' ' + line;
-            } else if (Object.keys(currentItem.options).length === 0) {
-              currentItem.q += ' ' + line;
-            }
-          }
+        });
+
+        if (qText) {
+          questions.push({
+            id: 'q_' + idx,
+            question: qText,
+            options: options,
+            key: key || (options[0] ? options[0].letter : 'A'),
+            explanation: explanation || 'Belum ada pembahasan khusus untuk konsep ini.'
+          });
         }
       });
 
-      if (currentItem && currentItem.q) {
-        results.push(currentItem);
-      }
-
-      return results;
+      return questions;
     }
 
-    // Fungsi Validasi Jawaban Kuis ABC
-    function handleSelectQuizOption(sessionId, questionIdx, selectedOption, correctKey) {
-      const containerId = `quiz_opts_${sessionId}_${questionIdx}`;
-      const feedbackId = `quiz_feedback_${sessionId}_${questionIdx}`;
-      const container = document.getElementById(containerId);
-      const feedback = document.getElementById(feedbackId);
-      if (!container || !feedback) return;
+    function handleQuizOptionClick(sessionId, qIdx, chosenLetter, correctLetter) {
+      const container = document.getElementById(`quiz-feedback-${sessionId}-${qIdx}`);
+      const btnA = document.getElementById(`opt-btn-${sessionId}-${qIdx}-A`);
+      const btnB = document.getElementById(`opt-btn-${sessionId}-${qIdx}-B`);
+      const btnC = document.getElementById(`opt-btn-${sessionId}-${qIdx}-C`);
+      const btnD = document.getElementById(`opt-btn-${sessionId}-${qIdx}-D`);
+      const allBtns = [btnA, btnB, btnC, btnD].filter(Boolean);
 
-      const buttons = container.querySelectorAll('button[data-opt]');
-      const isCorrect = selectedOption.toUpperCase() === correctKey.toUpperCase();
-
-      buttons.forEach(btn => {
-        const opt = btn.getAttribute('data-opt');
+      allBtns.forEach(btn => {
         btn.disabled = true;
-        btn.classList.remove('hover:bg-slate-800', 'border-borderDark', 'bg-cardDark');
-
-        if (opt === correctKey) {
-          btn.className = 'w-full p-3 rounded-lg bg-emerald-950/80 border-2 border-emerald-500 text-white font-bold text-xs flex items-center justify-between text-left';
-          btn.innerHTML = `<span><strong class="text-emerald-400 font-mono mr-2">${opt}.</strong> ${btn.getAttribute('data-label')}</span> <span class="text-emerald-400 font-extrabold text-sm">✓ Benar</span>`;
-        } else if (opt === selectedOption && !isCorrect) {
-          btn.className = 'w-full p-3 rounded-lg bg-rose-950/80 border-2 border-rose-500 text-white font-medium text-xs flex items-center justify-between text-left opacity-90';
-          btn.innerHTML = `<span><strong class="text-rose-400 font-mono mr-2">${opt}.</strong> ${btn.getAttribute('data-label')}</span> <span class="text-rose-400 font-extrabold text-sm">✕ Salah</span>`;
-        } else {
-          btn.className = 'w-full p-3 rounded-lg bg-cardDark/50 border border-slate-800 text-slate-500 text-xs flex items-center text-left opacity-60';
-        }
+        btn.classList.remove('bg-surfaceDark', 'hover:border-yellow-400/50');
       });
 
-      feedback.classList.remove('hidden');
+      const chosenBtn = document.getElementById(`opt-btn-${sessionId}-${qIdx}-${chosenLetter}`);
+      const correctBtn = document.getElementById(`opt-btn-${sessionId}-${qIdx}-${correctLetter}`);
+
+      if (chosenLetter === correctLetter) {
+        if (chosenBtn) {
+          chosenBtn.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+        }
+        if (container) {
+          container.classList.remove('hidden');
+          container.className = 'mt-3 p-3 rounded-xl border border-emerald-500/40 bg-emerald-950/20 text-xs text-emerald-200';
+          container.innerHTML = `<strong>✓ Jawaban Anda Benar (${correctLetter})!</strong><p class="mt-1 text-slate-300 leading-relaxed">${escapeHtml(container.dataset.explanation)}</p>`;
+        }
+      } else {
+        if (chosenBtn) {
+          chosenBtn.classList.add('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
+        }
+        if (correctBtn) {
+          correctBtn.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+        }
+        if (container) {
+          container.classList.remove('hidden');
+          container.className = 'mt-3 p-3 rounded-xl border border-rose-500/40 bg-rose-950/20 text-xs text-rose-200';
+          container.innerHTML = `<strong>✕ Jawaban Kurang Tepat. Jawaban Benar: (${correctLetter})</strong><p class="mt-1 text-slate-300 leading-relaxed">${escapeHtml(container.dataset.explanation)}</p>`;
+        }
+      }
     }
 
-    // Reset Kuis ABC
-    function resetQuizCard(sessionId, questionIdx, correctKey, rawOptionsJson) {
-      const containerId = `quiz_opts_${sessionId}_${questionIdx}`;
-      const feedbackId = `quiz_feedback_${sessionId}_${questionIdx}`;
-      const container = document.getElementById(containerId);
-      const feedback = document.getElementById(feedbackId);
-      if (!container || !feedback) return;
-
-      feedback.classList.add('hidden');
-      const options = JSON.parse(decodeURIComponent(rawOptionsJson));
-
-      container.innerHTML = Object.entries(options).map(([letter, label]) => `
-        <button 
-          type="button"
-          data-opt="${letter}"
-          data-label="${escapeHtml(label)}"
-          onclick="handleSelectQuizOption('${sessionId}', ${questionIdx}, '${letter}', '${correctKey}')"
-          class="w-full p-3 rounded-lg bg-cardDark hover:bg-slate-800 border border-borderDark hover:border-brandYellow text-slate-200 text-xs transition flex items-center text-left group">
-          <span class="w-6 h-6 rounded bg-surfaceDark text-brandYellow font-mono font-bold text-xs flex items-center justify-center mr-2.5 shrink-0 border border-borderDark group-hover:bg-brandYellow group-hover:text-slate-950 transition">
-            ${letter}
-          </span>
-          <span class="leading-snug select-text">${escapeHtml(label)}</span>
-        </button>
-      `).join('');
+    function resetQuizQuestion(sessionId, qIdx) {
+      const container = document.getElementById(`quiz-feedback-${sessionId}-${qIdx}`);
+      if (container) container.classList.add('hidden');
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`opt-btn-${sessionId}-${qIdx}-${letter}`);
+        if (btn) {
+          btn.disabled = false;
+          btn.className = 'opt-btn w-full text-left p-2.5 rounded-xl bg-surfaceDark border border-borderDark hover:border-yellow-400/50 text-xs text-slate-200 transition flex items-center gap-2.5 select-none';
+        }
+      });
     }
 
-    // Navigasi Tampilan
-    function setAppView(view) {
-      appData.currentView = view;
-      
-      document.getElementById('viewCatalog').classList.toggle('hidden', view !== 'catalog');
-      document.getElementById('viewSessions').classList.toggle('hidden', view !== 'sessions');
-      document.getElementById('viewHvs').classList.toggle('hidden', view !== 'hvs');
-      document.getElementById('btnPrintHvs').classList.toggle('hidden', view !== 'hvs');
-
-      // Styling Tombol Nav
-      const btnCatalog = document.getElementById('navCatalog');
-      const btnSessions = document.getElementById('navSessions');
-      const btnHvs = document.getElementById('navHvs');
-
-      btnCatalog.className = view === 'catalog' 
-        ? 'px-3.5 py-2 text-xs font-bold rounded-lg bg-brandYellow text-slate-950 shadow-md transition'
-        : 'px-3.5 py-2 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-white border border-borderDark transition';
-
-      btnSessions.className = view === 'sessions' 
-        ? 'px-3.5 py-2 text-xs font-bold rounded-lg bg-brandYellow text-slate-950 shadow-md transition'
-        : 'px-3.5 py-2 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-white border border-borderDark transition';
-
-      btnHvs.className = view === 'hvs' 
-        ? 'px-3.5 py-2 text-xs font-bold rounded-lg bg-brandYellow text-slate-950 shadow-md transition'
-        : 'px-3.5 py-2 text-xs font-bold rounded-lg bg-surfaceDark text-slate-300 hover:text-white border border-borderDark transition';
-
-      if (view === 'catalog') renderCatalog();
-      if (view === 'sessions') renderSessions();
-      if (view === 'hvs') renderHvs();
-    }
-
-    // Pilih Mata Kuliah dari Katalog
-    function selectCourse(courseId) {
-      appData.activeCourseId = courseId;
-      setAppView('sessions');
-    }
-
-    // Render Katalog Kartu Kotak-Kotak
+    // RENDER DAFTAR MATA KULIAH (KATALOG GRID)
     function renderCatalog() {
-      const container = document.getElementById('courseCardsGrid');
-      container.innerHTML = appData.courses.map(c => {
-        const sessionCount = appData.sessions.filter(s => s.courseId === c.id).length;
-        const isActive = c.id === appData.activeCourseId;
+      const grid = document.getElementById('catalogGrid');
+      if (!grid) return;
 
+      grid.innerHTML = appData.courses.map(course => {
+        const sessionCount = appData.sessions.filter(s => s.courseId === course.id).length;
+        const isActive = course.id === appData.activeCourseId;
         return `
-          <div onclick="selectCourse('${c.id}')" class="p-5 rounded-2xl bg-cardDark border-2 ${isActive ? 'border-brandYellow shadow-lg shadow-brandYellow/10' : 'border-borderDark hover:border-brandBlue/60'} cursor-pointer transition flex flex-col justify-between group">
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-extrabold px-2.5 py-0.5 rounded ${isActive ? 'bg-brandYellow text-slate-950' : 'bg-surfaceDark text-brandBlue'} font-mono">
-                  ${escapeHtml(c.code)}
+          <div onclick="selectCourse('${course.id}')" class="p-5 rounded-2xl bg-surfaceDark border ${isActive ? 'border-yellow-400 shadow-lg shadow-yellow-400/10' : 'border-borderDark hover:border-blue-500/60'} cursor-pointer transition group flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <span class="text-[11px] font-mono font-bold px-2.5 py-1 rounded bg-slate-950 text-yellow-400 border border-borderDark">
+                  ${escapeHtml(course.code)} • ${course.sks} SKS
                 </span>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-surfaceDark text-slate-300 border border-borderDark font-mono">
-                  ${escapeHtml(c.classCode)}
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-950/70 text-blue-300 border border-blue-800/40">
+                  Kelas ${escapeHtml(course.classCode)}
                 </span>
               </div>
-              <div>
-                <h3 class="text-base font-extrabold text-white group-hover:text-brandYellow transition leading-snug">
-                  ${escapeHtml(c.name)}
-                </h3>
-                <p class="text-xs text-slate-400 mt-1">${c.sks} SKS • Undergraduate BINUS Malang</p>
-              </div>
+              <h3 class="text-base font-extrabold text-white group-hover:text-yellow-400 transition leading-snug">
+                ${escapeHtml(course.name)}
+              </h3>
             </div>
-            
-            <div class="pt-4 mt-4 border-t border-borderDark/80 flex items-center justify-between text-xs">
-              <span class="text-slate-400">${sessionCount} Sesi Materi</span>
-              <span class="text-brandBlue font-bold group-hover:translate-x-1 transition flex items-center gap-1">
+            <div class="mt-6 pt-4 border-t border-borderDark/60 flex items-center justify-between text-xs text-slate-400">
+              <span>${sessionCount} Sesi Kuliah</span>
+              <span class="text-blue-400 font-bold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                 Buka Materi →
               </span>
             </div>
@@ -788,392 +662,216 @@
       }).join('');
     }
 
-    // Render Daftar Sesi Perkuliahan
+    // RENDER SESI AKTIF
     function renderSessions() {
-      const activeCourse = appData.courses.find(c => c.id === appData.activeCourseId) || appData.courses[0];
-      if (!activeCourse) return;
+      const listContainer = document.getElementById('sessionsList');
+      const courseTitle = document.getElementById('activeCourseTitle');
+      const courseCode = document.getElementById('activeCourseCode');
+      const courseMeta = document.getElementById('activeCourseMeta');
+      const currentCourse = appData.courses.find(c => c.id === appData.activeCourseId);
 
-      document.getElementById('activeCourseCode').textContent = activeCourse.code;
-      document.getElementById('activeCourseClass').textContent = activeCourse.classCode;
-      document.getElementById('activeCourseSks').textContent = activeCourse.sks + ' SKS';
-      document.getElementById('activeCourseName').textContent = activeCourse.name;
+      if (courseTitle && currentCourse) courseTitle.textContent = currentCourse.name;
+      if (courseCode && currentCourse) courseCode.textContent = currentCourse.code;
+      if (courseMeta && currentCourse) courseMeta.textContent = `Kelas ${currentCourse.classCode} • ${currentCourse.sks} SKS BINUS Malang`;
 
-      const filteredSessions = appData.sessions
-        .filter(s => s.courseId === activeCourse.id)
+      const activeSessions = appData.sessions
+        .filter(s => s.courseId === appData.activeCourseId)
         .sort((a, b) => a.sessionNumber - b.sessionNumber);
 
-      document.getElementById('activeCourseStats').textContent = `${filteredSessions.length} Sesi Terdaftar • Lengkap dengan Slide & Soal Ujian`;
+      if (!listContainer) return;
 
-      const container = document.getElementById('sessionsContainer');
-
-      if (filteredSessions.length === 0) {
-        container.innerHTML = `
-          <div class="p-10 rounded-2xl bg-cardDark border border-borderDark text-center space-y-3">
-            <span class="text-4xl">📂</span>
-            <h3 class="text-sm font-bold text-white">Belum Ada Sesi untuk Mata Kuliah Ini</h3>
-            <p class="text-xs text-slate-400 max-w-sm mx-auto">
-              Silakan login admin untuk mengunggah materi slide, rangkuman, dan soal latihan.
+      if (!activeSessions.length) {
+        listContainer.innerHTML = `
+          <div class="p-12 text-center rounded-2xl bg-surfaceDark/50 border border-dashed border-borderDark space-y-4">
+            <span class="text-4xl block">📚</span>
+            <h4 class="text-base font-bold text-slate-300">Belum ada materi atau sesi yang tersimpan</h4>
+            <p class="text-xs text-slate-400 max-w-md mx-auto">
+              ${appData.isAdmin 
+                ? 'Klik tombol <strong>+ Upload Sesi & Materi</strong> di atas untuk menambahkan dokumen, rangkuman teks, dan kuis pilihan ganda langsung ke Database Supabase.' 
+                : 'Materi sesi untuk mata kuliah ini belum diunggah oleh Admin. Masuk sebagai Admin untuk mulai menginput data.'}
             </p>
-            <div class="admin-only hidden pt-2">
-              <button onclick="toggleUploadSessionDrawer()" class="px-4 py-2 text-xs font-bold rounded-lg bg-brandYellow text-slate-950 hover:bg-brandYellowHover transition">
-                + Tambah Sesi Pertama
-              </button>
-            </div>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = filteredSessions.map(sess => {
-        const viewerData = resolveDocViewerUrl(sess.fileUrl, sess.fileName, sess.fileDataUrl);
-        const questionsList = parseQuestionsText(sess.manualQuestions);
+      listContainer.innerHTML = activeSessions.map(sess => {
+        const questions = parseManualQuestions(sess.manualQuestions);
 
-        return `
-          <article class="p-5 sm:p-6 rounded-2xl bg-cardDark border border-borderDark hover:border-slate-700 transition space-y-5 shadow-xl relative">
-            
-            <!-- Header Kartu Sesi -->
-            <div class="flex flex-wrap items-start justify-between gap-3 border-b border-borderDark pb-3">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-brandYellow text-slate-950 uppercase tracking-wide">
-                    Sesi ${sess.sessionNumber}
+        let previewHtml = '';
+        if (sess.fileDataUrl || sess.fileUrl) {
+          const targetUrl = sess.fileDataUrl || sess.fileUrl;
+          const isPdf = (sess.fileName && sess.fileName.toLowerCase().endsWith('.pdf')) || targetUrl.includes('.pdf');
+          
+          if (isPdf) {
+            previewHtml = `
+              <div class="mb-5 rounded-xl overflow-hidden border border-borderDark bg-slate-950">
+                <div class="p-3 bg-surfaceDark/90 border-b border-borderDark flex justify-between items-center text-xs">
+                  <span class="font-bold text-slate-300 flex items-center gap-2">
+                    📄 ${escapeHtml(sess.fileName || 'Dokumen PDF')}
                   </span>
-                  <span class="text-xs text-slate-400 font-mono">${escapeHtml(activeCourse.code)}</span>
+                  <a href="${escapeHtml(targetUrl)}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1">
+                    Buka di Tab Baru ↗
+                  </a>
                 </div>
-                <h3 class="text-base sm:text-lg font-extrabold text-white mt-1.5 leading-snug">
-                  ${escapeHtml(sess.title)}
-                </h3>
+                <object data="${escapeHtml(targetUrl)}" type="application/pdf" class="w-full h-[550px]">
+                  <iframe src="https://docs.google.com/viewer?url=${encodeURIComponent(targetUrl)}&embedded=true" class="w-full h-[550px] border-0">
+                    <p class="p-4 text-xs text-slate-400">Browser Anda tidak mendukung preview PDF langsung. <a href="${escapeHtml(targetUrl)}" target="_blank" class="text-yellow-400 underline">Unduh Dokumen</a></p>
+                  </iframe>
+                </object>
               </div>
+            `;
+          } else {
+            previewHtml = `
+              <div class="mb-5 rounded-xl overflow-hidden border border-borderDark bg-slate-950">
+                <div class="p-3 bg-surfaceDark/90 border-b border-borderDark flex justify-between items-center text-xs">
+                  <span class="font-bold text-slate-300 flex items-center gap-2">
+                    📊 ${escapeHtml(sess.fileName || 'Slide Materi Presentasi')}
+                  </span>
+                  <a href="${escapeHtml(targetUrl)}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1">
+                    Buka di Tab Baru ↗
+                  </a>
+                </div>
+                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(targetUrl)}" class="w-full h-[550px] border-0">
+                  <iframe src="https://docs.google.com/viewer?url=${encodeURIComponent(targetUrl)}&embedded=true" class="w-full h-[550px] border-0"></iframe>
+                </iframe>
+              </div>
+            `;
+          }
+        }
 
-              <!-- Tombol Admin Aksi -->
-              <div class="admin-only hidden flex items-center gap-2">
-                <button onclick="openEditQuestionsModal('${sess.id}')" class="text-xs px-2.5 py-1 rounded bg-brandYellow/10 text-brandYellow hover:bg-brandYellow hover:text-slate-950 border border-brandYellow/40 transition font-bold">
-                  ✏️ Edit Soal
-                </button>
-                <button onclick="handleDeleteSession('${sess.id}')" class="text-xs px-2 py-1 rounded bg-red-950/40 text-red-400 hover:text-red-300 border border-red-800/40 transition">
-                  Hapus Sesi
-                </button>
+        let imagePreviewHtml = '';
+        if (sess.imageUrl) {
+          imagePreviewHtml = `
+            <div class="my-4 rounded-xl overflow-hidden border border-borderDark bg-slate-950 p-2">
+              <span class="block text-[11px] font-bold text-yellow-400 uppercase tracking-wider mb-2">🖼️ Diagram / Catatan Visual</span>
+              <img src="${escapeHtml(sess.imageUrl)}" alt="Catatan Diagram Sesi" class="max-h-96 w-auto mx-auto rounded-lg object-contain cursor-zoom-in" onclick="window.open('${escapeHtml(sess.imageUrl)}', '_blank')">
+            </div>
+          `;
+        }
+
+        let quizHtml = '';
+        if (questions.length) {
+          quizHtml = `
+            <div class="mt-6 pt-5 border-t border-borderDark/80">
+              <div class="flex justify-between items-center mb-4">
+                <h5 class="text-xs font-extrabold uppercase tracking-wider text-yellow-400 flex items-center gap-2">
+                  <span>🎯</span> Uji Pemahaman Mandiri (Active Recall)
+                </h5>
+                <span class="text-[11px] text-slate-400 font-semibold">${questions.length} Pertanyaan</span>
+              </div>
+              <div class="space-y-4">
+                ${questions.map((q, qIdx) => `
+                  <div class="p-4 rounded-xl bg-slate-950/80 border border-borderDark space-y-3">
+                    <p class="text-xs font-bold text-slate-100 leading-relaxed">
+                      ${qIdx + 1}. ${escapeHtml(q.question)}
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                      ${q.options.map(opt => `
+                        <button id="opt-btn-${sess.id}-${qIdx}-${opt.letter}" onclick="handleQuizOptionClick('${sess.id}', ${qIdx}, '${opt.letter}', '${q.key}')" class="opt-btn w-full text-left p-2.5 rounded-xl bg-surfaceDark border border-borderDark hover:border-yellow-400/50 text-xs text-slate-200 transition flex items-center gap-2.5 select-none">
+                          <span class="w-5 h-5 rounded-full bg-slate-900 border border-borderDark flex items-center justify-center font-bold text-[10px] text-yellow-400 shrink-0">${opt.letter}</span>
+                          <span class="text-slate-300 leading-tight">${escapeHtml(opt.text)}</span>
+                        </button>
+                      `).join('')}
+                    </div>
+                    <div id="quiz-feedback-${sess.id}-${qIdx}" class="hidden" data-explanation="${escapeHtml(q.explanation)}"></div>
+                    <div class="flex justify-end pt-1">
+                      <button onclick="resetQuizQuestion('${sess.id}', ${qIdx})" class="text-[10px] font-bold text-slate-400 hover:text-white transition">
+                        🔄 Ulangi Soal Ini
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
               </div>
             </div>
+          `;
+        }
 
-            <!-- 1. LIVE PREVIEW DOKUMEN / PPTX / PDF -->
-            <!-- 1. LIVE PREVIEW DOKUMEN / PPTX / PDF (TAMPIL LANGSUNG) -->
-            ${sess.fileName ? `
-              <div class="rounded-xl border border-borderDark bg-[#0a0c12] overflow-hidden">
-                <div class="px-4 py-2.5 bg-surfaceDark border-b border-borderDark flex items-center justify-between text-xs">
-                  <span class="font-mono text-slate-300 flex items-center gap-2 truncate max-w-[280px] sm:max-w-md">
-                    <span>📑</span>
-                    <strong class="text-white">Live Preview:</strong> ${escapeHtml(sess.fileName)}
-                  </span>
-                  <div class="flex items-center gap-2">
-                    <button onclick="toggleViewer('viewer_${sess.id}')" class="text-[11px] px-2.5 py-1 rounded bg-cardDark text-slate-300 hover:text-white border border-borderDark transition">
-                      Buka/Tutup
-                    </button>
-                    ${sess.fileUrl ? `
-                      <a href="${sess.fileUrl}" target="_blank" class="text-[11px] text-brandBlue hover:text-blue-300 font-bold px-2 py-1 transition flex items-center gap-1">
-                        Layar Penuh ↗
-                      </a>
-                    ` : ''}
-                  </div>
-                </div>
-
-                <!-- Iframe Viewer Langsung Muncul dan Bisa Digulir -->
-                <div id="viewer_${sess.id}" class="w-full bg-[#0d0f17]">
-                  ${viewerData && viewerData.type === 'iframe' ? `
-                    <iframe 
-                      src="${viewerData.url}" 
-                      class="w-full h-[480px] sm:h-[600px] border-0" 
-                      title="Live Preview ${escapeHtml(sess.fileName)}"
-                      allow="autoplay"
-                      loading="lazy"
-                      allowfullscreen="true">
-                    </iframe>
-                  ` : `
-                    <iframe 
-                      src="${sess.fileUrl || sess.fileDataUrl}#toolbar=0" 
-                      class="w-full h-[480px] sm:h-[600px] border-0" 
-                      title="Live Preview ${escapeHtml(sess.fileName)}"
-                      allowfullscreen="true">
-                    </iframe>
-                  `}
-                </div>
+        return `
+          <article class="p-6 rounded-2xl bg-surfaceDark border border-borderDark shadow-xl space-y-4">
+            <div class="flex flex-wrap justify-between items-start gap-3 border-b border-borderDark pb-4">
+              <div>
+                <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-yellow-400 text-slate-950 uppercase tracking-wider">
+                  Sesi ${sess.sessionNumber}
+                </span>
+                <h4 class="text-lg font-extrabold text-white mt-1.5 leading-snug">
+                  ${escapeHtml(sess.title)}
+                </h4>
               </div>
-            ` : ''}
-
-            <!-- 2. RANGKUMAN INTI & KEY TAKEAWAYS (TEKS) -->
-            <div class="p-4 sm:p-5 rounded-xl bg-[#0e1017] border border-borderDark space-y-3">
-              <div class="flex items-center justify-between border-b border-borderDark pb-2.5">
+              ${appData.isAdmin ? `
                 <div class="flex items-center gap-2">
-                  <span class="text-base">💡</span>
-                  <span class="text-xs font-extrabold text-brandYellow tracking-wide uppercase">
-                    Rangkuman Inti & Key Takeaways
-                  </span>
+                  <button onclick="openEditQuestionsModal('${sess.id}')" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/40 hover:bg-blue-600 hover:text-white transition">
+                    ✏️ Edit Soal ABC
+                  </button>
+                  <button onclick="handleDeleteSession('${sess.id}')" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/40 hover:bg-rose-500 hover:text-white transition">
+                    🗑️ Hapus
+                  </button>
                 </div>
-                <span class="text-[10px] text-slate-400 font-mono">Catatan Kuliah</span>
+              ` : ''}
+            </div>
+
+            <!-- Live Document Preview -->
+            ${previewHtml}
+
+            <!-- Rangkuman Materi -->
+            <div class="p-5 rounded-xl bg-slate-950 border border-borderDark/80 space-y-2">
+              <div class="flex items-center gap-2 text-xs font-extrabold text-yellow-400 uppercase tracking-wider">
+                <span>💡</span> Rangkuman Inti & Penjelasan Konsep
               </div>
-              <div class="text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line select-text font-sans">
+              <div class="text-xs text-slate-300 leading-relaxed whitespace-pre-line font-sans">
                 ${escapeHtml(sess.content)}
               </div>
             </div>
 
-            <!-- 3. GAMBAR DIAGRAM OPSIONAL JIKA ADA -->
-            ${sess.imageUrl ? `
-              <div class="p-3 rounded-xl bg-surfaceDark border border-borderDark space-y-2">
-                <div class="flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300 flex items-center gap-1.5">
-                    <span>🖼️</span> Bagan & Diagram Visual
-                  </span>
-                  <button onclick="openImageZoom('${sess.imageUrl}')" class="text-[11px] text-brandYellow hover:underline">
-                    Perbesar Gambar 🔍
-                  </button>
-                </div>
-                <div class="rounded-lg overflow-hidden border border-borderDark bg-black flex justify-center cursor-pointer" onclick="openImageZoom('${sess.imageUrl}')">
-                  <img src="${sess.imageUrl}" alt="Diagram Visual" class="max-h-80 w-auto object-contain hover:scale-105 transition duration-300">
-                </div>
-              </div>
-            ` : ''}
+            <!-- Lampiran Diagram Gambar (Opsional) -->
+            ${imagePreviewHtml}
 
-            <!-- 4. PERTANYAAN & LATIHAN SOAL PILIHAN GANDA (A/B/C/D) MANUAL -->
-            <div class="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0c1424] via-cardDark to-[#121624] border border-brandBlue/40 space-y-3">
-              <div class="flex items-center justify-between border-b border-borderDark pb-2.5">
-                <div class="flex items-center gap-2">
-                  <span class="text-base">🎯</span>
-                  <span class="text-xs font-extrabold text-brandBlue tracking-wide uppercase">
-                    Kuis Pilihan Ganda (A/B/C/D) — Sesi ${sess.sessionNumber}
-                  </span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded ${questionsList.length > 0 ? 'bg-brandBlue/20 text-blue-300 border border-brandBlue/30' : 'bg-slate-800 text-slate-400'}">
-                    ${questionsList.length} Soal Pilihan Ganda
-                  </span>
-                  <div class="admin-only hidden">
-                    <button onclick="openEditQuestionsModal('${sess.id}')" class="text-[11px] font-bold px-2.5 py-0.5 rounded bg-brandYellow/20 text-brandYellow hover:bg-brandYellow hover:text-slate-950 border border-brandYellow/40 transition">
-                      ✏️ Kelola Soal
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              ${questionsList.length > 0 ? `
-                <div class="space-y-4 pt-1">
-                  ${questionsList.map((item, idx) => {
-                    const hasOptions = item.options && Object.keys(item.options).length > 0;
-                    const encodedOptions = encodeURIComponent(JSON.stringify(item.options || {}));
-                    const correctKey = item.key || 'A';
-
-                    return `
-                      <div class="p-4 rounded-xl bg-surfaceDark border border-borderDark space-y-3">
-                        <div class="flex items-start gap-2.5">
-                          <span class="w-6 h-6 rounded-full bg-brandBlue/20 text-blue-400 font-bold text-xs flex items-center justify-center shrink-0 border border-brandBlue/30 font-mono">
-                            ${idx + 1}
-                          </span>
-                          <p class="text-xs sm:text-sm font-bold text-white leading-relaxed pt-0.5 select-text">
-                            ${escapeHtml(item.q)}
-                          </p>
-                        </div>
-
-                        <!-- OPSI PILIHAN GANDA (A, B, C, D) -->
-                        ${hasOptions ? `
-                          <div id="quiz_opts_${sess.id}_${idx}" class="space-y-2 pt-1 pl-0 sm:pl-8">
-                            ${Object.entries(item.options).map(([letter, label]) => `
-                              <button 
-                                type="button"
-                                data-opt="${letter}"
-                                data-label="${escapeHtml(label)}"
-                                onclick="handleSelectQuizOption('${sess.id}', ${idx}, '${letter}', '${correctKey}')"
-                                class="w-full p-3 rounded-lg bg-cardDark hover:bg-slate-800 border border-borderDark hover:border-brandYellow text-slate-200 text-xs transition flex items-center text-left group">
-                                <span class="w-6 h-6 rounded bg-surfaceDark text-brandYellow font-mono font-bold text-xs flex items-center justify-center mr-2.5 shrink-0 border border-borderDark group-hover:bg-brandYellow group-hover:text-slate-950 transition">
-                                  ${letter}
-                                </span>
-                                <span class="leading-snug select-text">${escapeHtml(label)}</span>
-                              </button>
-                            `).join('')}
-                          </div>
-
-                          <!-- PEMBAHASAN OTOMATIS MUNCUL SAAT DIKLIK -->
-                          <div id="quiz_feedback_${sess.id}_${idx}" class="hidden pl-0 sm:pl-8 space-y-2">
-                            <div class="p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/50 text-xs text-emerald-200 leading-relaxed font-sans">
-                              <div class="flex items-center justify-between pb-1 mb-1 border-b border-emerald-800/60 font-bold">
-                                <span class="text-emerald-400">Kunci Jawaban: Pilihan ${correctKey}</span>
-                                <button type="button" onclick="resetQuizCard('${sess.id}', ${idx}, '${correctKey}', '${encodedOptions}')" class="text-[10px] text-brandYellow hover:underline">
-                                  🔄 Ulangi Soal Ini
-                                </button>
-                              </div>
-                              <p class="text-slate-300 pt-0.5">
-                                <strong class="text-white">Pembahasan:</strong> ${escapeHtml(item.explanation || 'Jawaban telah diverifikasi benar berdasarkan materi sesi perkuliahan.')}
-                              </p>
-                            </div>
-                          </div>
-                        ` : `
-                          <!-- Fallback format teks manual biasa jika tidak ada opsi A/B/C/D -->
-                          <div class="pl-8 pt-1">
-                            <button onclick="toggleAnswerCard('ans_${sess.id}_${idx}', this)" class="text-[11px] font-semibold px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-brandYellow border border-slate-700/80 transition flex items-center gap-1.5">
-                              <span>👁️</span> <span>Lihat Pembahasan</span>
-                            </button>
-                            <div id="ans_${sess.id}_${idx}" class="hidden mt-2 p-3 rounded-lg bg-emerald-950/30 border border-emerald-600/40 text-xs text-emerald-200 leading-relaxed select-text font-sans">
-                              ${escapeHtml(item.explanation || 'Pembahasan tersedia.')}
-                            </div>
-                          </div>
-                        `}
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-              ` : `
-                <div class="p-4 rounded-lg bg-surfaceDark/60 border border-slate-800 text-center py-3">
-                  <p class="text-xs text-slate-400">Belum ada soal kuis pilihan ganda yang ditambahkan untuk sesi ini.</p>
-                  <div class="admin-only hidden pt-2">
-                    <button onclick="openEditQuestionsModal('${sess.id}')" class="text-xs px-3 py-1.5 rounded-lg bg-brandYellow hover:bg-brandYellowHover text-slate-950 font-bold transition">
-                      + Tambah Soal Pilihan Ganda (A/B/C/D)
-                    </button>
-                  </div>
-                </div>
-              `}
-            </div>
-
-            <div class="pt-1 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-              <span>KUMIN • Semester 5</span>
-              <span>ID: ${sess.id}</span>
-            </div>
-
+            <!-- Kuis Pilihan Ganda -->
+            ${quizHtml}
           </article>
         `;
       }).join('');
-
-      applyAdminVisibility();
     }
 
-    // Render Master 2 Halaman HVS
+    // RENDER MASTER 2 HALAMAN HVS
     function renderHvs() {
-      const activeCourse = appData.courses.find(c => c.id === appData.activeCourseId) || appData.courses[0];
-      if (!activeCourse) return;
+      const currentCourse = appData.courses.find(c => c.id === appData.activeCourseId);
+      const hvs1 = document.getElementById('hvsPage1Content');
+      const hvs2 = document.getElementById('hvsPage2Content');
+      const title1 = document.getElementById('hvsTitleCourse1');
+      const title2 = document.getElementById('hvsTitleCourse2');
 
-      document.getElementById('hvs1CourseName').textContent = `${activeCourse.code} • ${activeCourse.name} (${activeCourse.classCode})`;
-      document.getElementById('hvs2CourseName').textContent = `${activeCourse.code} • ${activeCourse.name} (${activeCourse.classCode})`;
+      const courseName = currentCourse ? currentCourse.name : 'Mata Kuliah';
+      const courseCode = currentCourse ? `${currentCourse.code} • ${currentCourse.classCode}` : '';
 
-      const summary = HVS_SUMMARIES[activeCourse.id] || {
-        page1: [
-          { title: 'Sesi 1-3: Konsep Dasar & Fondasi', desc: 'Prinsip fundamental dan pemetaan awal masalah pada mata kuliah ini.' },
-          { title: 'Sesi 4-7: Metodologi & Eksekusi', desc: 'Penerapan praktis dan analisis kasus sebelum evaluasi tengah semester (UTS).' }
-        ],
-        page2: [
-          { title: 'Sesi 8-10: Analisis Lanjutan & Penerapan', desc: 'Studi komparasi dan validasi performa di lingkungan bisnis nyata.' },
-          { title: 'Sesi 11-14: Optimasi & Evaluasi Akhir', desc: 'Finalisasi proyek terpadu dan persiapan menyeluruh evaluasi akhir (UAS).' }
-        ]
+      if (title1) title1.textContent = `${courseName} (${courseCode})`;
+      if (title2) title2.textContent = `${courseName} (${courseCode})`;
+
+      const summaryData = HVS_SUMMARIES[appData.activeCourseId] || {
+        uts: { title: 'Paruh Pertama (UTS)', points: ['Rangkuman materi sesi 1 sampai 7 akan terkonsolidasi di lembar ini.'] },
+        uas: { title: 'Paruh Kedua (UAS)', points: ['Rangkuman materi sesi 8 sampai 14 akan terkonsolidasi di lembar ini.'] }
       };
 
-      document.getElementById('hvsPage1Content').innerHTML = summary.page1.map(item => `
-        <div class="space-y-1.5 p-3 rounded-lg bg-surfaceDark/60 border border-borderDark">
-          <h4 class="font-bold text-brandYellow border-b border-slate-700 pb-1">${escapeHtml(item.title)}</h4>
-          <p class="text-slate-300 leading-snug">${escapeHtml(item.desc)}</p>
-        </div>
-      `).join('');
+      if (hvs1) {
+        hvs1.innerHTML = `
+          <h4 class="font-extrabold text-yellow-400 border-b border-borderDark pb-1 mb-2 text-xs">${summaryData.uts.title}</h4>
+          <ul class="space-y-2 text-xs text-slate-200">
+            ${summaryData.uts.points.map(pt => `<li>• ${escapeHtml(pt)}</li>`).join('')}
+          </ul>
+        `;
+      }
 
-      document.getElementById('hvsPage2Content').innerHTML = summary.page2.map(item => `
-        <div class="space-y-1.5 p-3 rounded-lg bg-surfaceDark/60 border border-borderDark">
-          <h4 class="font-bold text-brandBlue border-b border-slate-700 pb-1">${escapeHtml(item.title)}</h4>
-          <p class="text-slate-300 leading-snug">${escapeHtml(item.desc)}</p>
-        </div>
-      `).join('');
-    }
-
-    // Toggle Tampilan Soal & Pembahasan
-    function toggleAnswerCard(id, btn) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const isHidden = el.classList.contains('hidden');
-      if (isHidden) {
-        el.classList.remove('hidden');
-        btn.innerHTML = '<span>🙈</span> <span>Sembunyikan Pembahasan</span>';
-        btn.classList.add('text-slate-300');
-        btn.classList.remove('text-brandYellow');
-      } else {
-        el.classList.add('hidden');
-        btn.innerHTML = '<span>👁️</span> <span>Lihat Pembahasan</span>';
-        btn.classList.remove('text-slate-300');
-        btn.classList.add('text-brandYellow');
+      if (hvs2) {
+        hvs2.innerHTML = `
+          <h4 class="font-extrabold text-blue-400 border-b border-borderDark pb-1 mb-2 text-xs">${summaryData.uas.title}</h4>
+          <ul class="space-y-2 text-xs text-slate-200">
+            ${summaryData.uas.points.map(pt => `<li>• ${escapeHtml(pt)}</li>`).join('')}
+          </ul>
+        `;
       }
     }
 
-    function toggleViewer(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle('hidden');
-    }
-
-    function toggleUploadSessionDrawer() {
-      const drawer = document.getElementById('adminUploadDrawer');
-      drawer.classList.toggle('hidden');
-      if (!drawer.classList.contains('hidden')) {
-        document.getElementById('inputSessionTitle').focus();
-      }
-    }
-
-    // ZOOM GAMBAR MODAL
-    function openImageZoom(url) {
-      document.getElementById('modalZoomImgTag').src = url;
-      document.getElementById('modalImageZoom').classList.remove('hidden');
-    }
-    function closeImageZoom() {
-      document.getElementById('modalImageZoom').classList.add('hidden');
-    }
-
-    // SISTEM ADMIN & LOGIN
-    function handleAdminButtonClick() {
-      if (appData.isAdmin) {
-        if (confirm('Keluar dari Mode Admin KUMIN?')) {
-          appData.isAdmin = false;
-          updateAdminStateUI();
-        }
-      } else {
-        document.getElementById('modalAdminLogin').classList.remove('hidden');
-        document.getElementById('inputAdminPin').value = '';
-        document.getElementById('inputAdminPin').focus();
-      }
-    }
-
-    function closeAdminLoginModal() {
-      document.getElementById('modalAdminLogin').classList.add('hidden');
-    }
-
-    function handleAdminLoginSubmit(e) {
-      e.preventDefault();
-      const pin = document.getElementById('inputAdminPin').value.trim();
-      
-      // Passcode rahasia Admin
-      if (pin === '10042006') {
-        appData.isAdmin = true;
-        closeAdminLoginModal();
-        updateAdminStateUI();
-        alert('✅ Login Berhasil! Anda sekarang dalam Mode Admin.');
-      } else {
-        alert('❌ Passcode salah. Silakan coba kembali.');
-      }
-    }
-
-    function updateAdminStateUI() {
-      const roleBadge = document.getElementById('roleIndicator');
-      const adminBtnLabel = document.getElementById('adminBtnLabel');
-
-      if (appData.isAdmin) {
-        roleBadge.textContent = 'Admin Mode';
-        roleBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-brandYellow/20 text-brandYellow border border-brandYellow/50';
-        adminBtnLabel.textContent = 'Keluar Admin';
-      } else {
-        roleBadge.textContent = 'Guest Mode';
-        roleBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-950/70 text-blue-400 border border-blue-800/60';
-        adminBtnLabel.textContent = 'Admin';
-      }
-
-      applyAdminVisibility();
-    }
-
-    function applyAdminVisibility() {
-      document.querySelectorAll('.admin-only').forEach(el => {
-        el.classList.toggle('hidden', !appData.isAdmin);
-      });
-    }
-
-    // SUBMIT UPLOAD SESI BARU
+    // ================= SUBMIT UPLOAD SESI BARU =================
     async function handleSessionSubmit(e) {
       e.preventDefault();
       if (!appData.isAdmin) return;
@@ -1189,99 +887,94 @@
 
       const submitBtn = document.getElementById('btnSubmitSession');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span>⏳ Menyimpan Sesi ke Supabase...</span>`;
+      submitBtn.innerHTML = `<span>⏳ Menyimpan ke Database Supabase...</span>`;
 
       try {
         let fileDataUrl = '';
         let fileName = fileInput ? fileInput.name : (fileUrl ? fileUrl.split('/').pop().split('?')[0] : '');
 
         if (fileInput) {
-          fileDataUrl = await readFileDataUrl(fileInput);
+          fileDataUrl = URL.createObjectURL(fileInput);
         }
 
         let imageUrl = imageUrlInput;
         if (imageFileInput) {
-          imageUrl = await readFileDataUrl(imageFileInput);
+          imageUrl = URL.createObjectURL(imageFileInput);
         }
 
-        const newSession = {
-          id: 's_' + Date.now(),
-          courseId: appData.activeCourseId,
-          sessionNumber: num,
+        const sessionPayload = {
+          course_id: appData.activeCourseId,
+          session_number: num,
           title: title,
-          content: content,
-          manualQuestions: manualQuestions,
-          fileName: fileName,
-          fileUrl: fileUrl,
-          fileDataUrl: fileDataUrl,
-          imageUrl: imageUrl
+          content_md: content,
+          manual_questions: manualQuestions,
+          attachment_name: fileName,
+          attachment_url: fileUrl || fileDataUrl,
+          image_url: imageUrl
         };
 
-        // 1. Simpan ke Supabase jika client aktif
         if (supabaseClient) {
-          try {
-            await supabaseClient.from('sessions').insert([{
-              id: newSession.id,
-              course_id: newSession.courseId,
-              session_number: newSession.sessionNumber,
-              title: newSession.title,
-              content: newSession.content,
-              manual_questions: newSession.manualQuestions,
-              file_name: newSession.fileName,
-              file_url: newSession.fileUrl,
-              file_data_url: newSession.fileDataUrl,
-              image_url: newSession.imageUrl
-            }]);
-          } catch (sbErr) {
-            console.warn('Gagal insert ke Supabase, menyimpan ke local browser:', sbErr);
-          }
-        }
+          const { error } = await supabaseClient
+            .from('sessions')
+            .insert([sessionPayload]);
 
-        // 2. Simpan ke local state
-        appData.sessions.push(newSession);
-        saveStorage();
+          if (error) throw new Error(error.message);
+          await fetchSessionsFromDatabase();
+          alert('✅ Sesi berhasil disimpan langsung ke Database Supabase!');
+        } else {
+          const fallbackSession = {
+            id: 's_' + Date.now(),
+            courseId: appData.activeCourseId,
+            sessionNumber: num,
+            title: title,
+            content: content,
+            manualQuestions: manualQuestions,
+            fileName: fileName,
+            fileUrl: fileUrl,
+            fileDataUrl: fileDataUrl,
+            imageUrl: imageUrl
+          };
+          appData.sessions.push(fallbackSession);
+          renderSessions();
+          renderCatalog();
+          alert('⚠️ Tersimpan sementara di memori browser (Supabase offline).');
+        }
 
         document.getElementById('formSessionUpload').reset();
         toggleUploadSessionDrawer();
-        renderSessions();
-        alert('✅ Sesi berhasil ditambahkan dan disinkronkan ke Supabase!');
       } catch (err) {
-        alert('Gagal menyimpan sesi: ' + err.message);
+        alert('Gagal menyimpan ke Database: ' + err.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = `<span>🚀 Simpan & Publikasikan Sesi</span>`;
+        submitBtn.innerHTML = `<span>🚀 Simpan ke Database Supabase</span>`;
       }
-    }
-
-    // Helper Read File ke Data URL
-    function readFileDataUrl(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error('Gagal membaca file dari disk.'));
-        reader.readAsDataURL(file);
-      });
     }
 
     // Hapus Sesi
     async function handleDeleteSession(sessionId) {
-      if (!confirm('Yakin ingin menghapus sesi perkuliahan ini?')) return;
+      if (!confirm('Yakin ingin menghapus sesi perkuliahan ini dari Database Supabase?')) return;
 
       if (supabaseClient) {
         try {
-          await supabaseClient.from('sessions').delete().eq('id', sessionId);
-        } catch (e) {
-          console.warn('Gagal menghapus di Supabase:', e);
-        }
-      }
+          const { error } = await supabaseClient
+            .from('sessions')
+            .delete()
+            .eq('id', sessionId);
 
-      appData.sessions = appData.sessions.filter(s => s.id !== sessionId);
-      saveStorage();
-      renderSessions();
-      renderCatalog();
+          if (error) throw error;
+          await fetchSessionsFromDatabase();
+          alert('✅ Sesi berhasil dihapus dari Database Supabase.');
+        } catch (err) {
+          alert('Gagal menghapus dari Database: ' + err.message);
+        }
+      } else {
+        appData.sessions = appData.sessions.filter(s => s.id !== sessionId);
+        renderSessions();
+        renderCatalog();
+      }
     }
 
-    // MODAL EDIT SOAL MANUAL
+    // MODAL EDIT SOAL
     function openEditQuestionsModal(sessionId) {
       const sess = appData.sessions.find(s => s.id === sessionId);
       if (!sess) return;
@@ -1302,42 +995,140 @@
       const sess = appData.sessions.find(s => s.id === sessionId);
       if (!sess) return;
 
-      sess.manualQuestions = document.getElementById('textareaEditQuestions').value.trim();
+      const newQuestions = document.getElementById('textareaEditQuestions').value.trim();
 
       if (supabaseClient) {
         try {
-          await supabaseClient
+          const { error } = await supabaseClient
             .from('sessions')
-            .update({ manual_questions: sess.manualQuestions })
+            .update({ manual_questions: newQuestions })
             .eq('id', sessionId);
-        } catch (e) {
-          console.warn('Gagal update manual_questions ke Supabase:', e);
+
+          if (error) throw error;
+          await fetchSessionsFromDatabase();
+          closeEditQuestionsModal();
+          alert('✅ Soal pilihan ganda berhasil diperbarui di Database Supabase!');
+        } catch (err) {
+          alert('Gagal memperbarui soal di Supabase: ' + err.message);
         }
+      } else {
+        sess.manualQuestions = newQuestions;
+        closeEditQuestionsModal();
+        renderSessions();
+        alert('✅ Soal pilihan ganda diperbarui!');
+      }
+    }
+
+    // MODAL TAMBAH MATA KULIAH
+    function openAddCourseModal() {
+      document.getElementById('modalAddCourse').classList.remove('hidden');
+    }
+
+    function closeAddCourseModal() {
+      document.getElementById('modalAddCourse').classList.add('hidden');
+    }
+
+    function handleSaveNewCourse(e) {
+      e.preventDefault();
+      const name = document.getElementById('inputNewCourseName').value.trim();
+      const code = document.getElementById('inputNewCourseCode').value.trim();
+      const classCode = document.getElementById('inputNewCourseClass').value.trim();
+      const sks = parseInt(document.getElementById('inputNewCourseSks').value) || 2;
+
+      const newCourse = {
+        id: 'c_' + Date.now(),
+        code: code,
+        name: name,
+        classCode: classCode,
+        sks: sks
+      };
+
+      appData.courses.push(newCourse);
+      closeAddCourseModal();
+      renderCatalog();
+      selectCourse(newCourse.id);
+      alert('✅ Mata Kuliah baru berhasil ditambahkan!');
+    }
+
+    // MODAL LOGIN ADMIN
+    function handleAdminButtonClick() {
+      if (appData.isAdmin) {
+        if (confirm('Keluar dari Mode Admin?')) {
+          setAdminState(false);
+        }
+      } else {
+        document.getElementById('modalAdminLogin').classList.remove('hidden');
+        document.getElementById('inputAdminPin').value = '';
+        setTimeout(() => document.getElementById('inputAdminPin').focus(), 100);
+      }
+    }
+
+    function closeAdminLoginModal() {
+      document.getElementById('modalAdminLogin').classList.add('hidden');
+    }
+
+    function submitAdminPasscode(e) {
+      e.preventDefault();
+      const pin = document.getElementById('inputAdminPin').value.trim();
+      if (pin === '10042006') {
+        setAdminState(true);
+        closeAdminLoginModal();
+        alert('🔓 Berhasil login sebagai Admin KUMIN!');
+      } else {
+        alert('❌ Passcode admin salah. Silakan coba lagi.');
+        document.getElementById('inputAdminPin').value = '';
+        document.getElementById('inputAdminPin').focus();
+      }
+    }
+
+    function setAdminState(isAdmin) {
+      appData.isAdmin = isAdmin;
+
+      const roleBadge = document.getElementById('roleIndicator');
+      const adminBtnText = document.getElementById('adminBtnText');
+      const adminLockIcon = document.getElementById('adminLockIcon');
+
+      if (isAdmin) {
+        if (roleBadge) {
+          roleBadge.textContent = 'Admin Mode';
+          roleBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400';
+        }
+        if (adminBtnText) adminBtnText.textContent = 'Logout';
+        if (adminLockIcon) adminLockIcon.textContent = '🔓';
+        document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+      } else {
+        if (roleBadge) {
+          roleBadge.textContent = 'Guest Mode';
+          roleBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-950/70 text-blue-400 border border-blue-800/60';
+        }
+        if (adminBtnText) adminBtnText.textContent = 'Admin';
+        if (adminLockIcon) adminLockIcon.textContent = '🔒';
+        document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
       }
 
-      saveStorage();
-      closeEditQuestionsModal();
       renderSessions();
-      alert('✅ Soal pilihan ganda berhasil diperbarui di Supabase!');
+      renderCatalog();
     }
 
     // RAHASIA LOGO KLIK 3X
     let logoClicks = 0;
     let logoTimer = null;
-    document.getElementById('brandLogo').addEventListener('click', () => {
-      logoClicks++;
-      clearTimeout(logoTimer);
-      logoTimer = setTimeout(() => { logoClicks = 0; }, 800);
+    const logoEl = document.getElementById('secretLogo');
+    if (logoEl) {
+      logoEl.addEventListener('click', () => {
+        logoClicks++;
+        clearTimeout(logoTimer);
+        logoTimer = setTimeout(() => { logoClicks = 0; }, 800);
 
-      if (logoClicks === 3) {
-        logoClicks = 0;
-        handleAdminButtonClick();
-      }
-    });
+        if (logoClicks === 3) {
+          logoClicks = 0;
+          handleAdminButtonClick();
+        }
+      });
+    }
 
     // Inisialisasi Saat Halaman Dimuat
     window.addEventListener('DOMContentLoaded', () => {
-      loadStorage();
       initSupabase();
       setAppView('sessions');
     });
